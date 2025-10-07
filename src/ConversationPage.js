@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
-import { Box, Tabs, Tab, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { 
+  Box, 
+  Tabs, 
+  Tab, 
+  Typography, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  Divider,
+  TextField, // Для поиска
+  FormControl, // Для dropdown
+  InputLabel,
+  Select,
+  MenuItem, // Для опций dropdown
+} from '@mui/material';
 import data from './examples.json'; // Импорт JSON (массив для нескольких разговоров)
 
 // Обернем данные в массив для симуляции (теперь data — массив)
@@ -26,9 +40,14 @@ function TabPanel(props) {
 
 const ConversationPage = () => {
   const [selectedTab, setSelectedTab] = useState(0);
+  const [searchTerm, setSearchTerm] = useState(''); // Для поиска по словам
+  const [selectedClass, setSelectedClass] = useState('Все'); // Для фильтра по классу
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
+    // Сброс фильтров при смене вкладки
+    setSearchTerm('');
+    setSelectedClass('Все');
   };
 
   const selectedConversation = conversations[selectedTab];
@@ -82,18 +101,29 @@ const ConversationPage = () => {
     // Комбинируем с базовым по спикеру (спикер 0 — голубоватый оттенок, остальные — серый)
     const speakerId = fragment.speaker;
     if (speakerId === 0) {
-      baseColor = baseColor.replace(/e8f5e8/g, '#e1f5fe'); // Для спикера 0 — голубой акцент
+      baseColor = baseColor === "#e8f5e8" ? '#e1f5fe' : baseColor; // Для спикера 0 — голубой акцент
     } else {
-      baseColor = baseColor.replace(/e1f5fe/g, '#f0f0f0'); // Для остальных — серый акцент
+      baseColor = baseColor === "#e1f5fe" ? '#f0f0f0' : baseColor; // Для остальных — серый акцент
     }
 
     return baseColor;
   };
 
+  // Извлечение уникальных классов для dropdown
+  const uniqueClasses = Array.from(new Set(fragments.map(fragment => getClassLabel(fragment).split(' (')[0] || 'N/A')));
+
+  // Фильтрация фрагментов
+  const filteredFragments = fragments.filter(fragment => {
+    const matchesSearch = fragment.text.toLowerCase().includes(searchTerm.toLowerCase());
+    const fragmentClass = getClassLabel(fragment).split(' (')[0] || 'N/A';
+    const matchesClass = selectedClass === 'Все' || fragmentClass === selectedClass;
+    return matchesSearch && matchesClass;
+  });
+
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Левая панель: Вкладки для разговоров */}
-      <Box sx={{ width: '30%', borderRight: 1, borderColor: 'divider', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+      <Box sx={{ width: '20%', borderRight: 1, borderColor: 'divider', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
         <Tabs
           orientation="vertical"
           variant="scrollable"
@@ -122,10 +152,12 @@ const ConversationPage = () => {
 
       {/* Правая панель: Диалог выбранного разговора */}
       <Box sx={{ 
-        width: '70%', 
-        p: 3, 
+        width: '80%', 
+        py: 3, // Вертикальный padding сохранён
+        px: 2, // Горизонтальный padding уменьшен
         overflowY: 'auto',
-        boxShadow: 'inset -2px 0 8px rgba(0,0,0,0.05)', // Тень для разделения панелей
+        boxShadow: 'inset -2px 0 8px rgba(0,0,0,0.05)',
+        boxSizing: 'border-box', // Padding не выходит за ширину
       }}>
         {conversations.map((conv, index) => (
           <TabPanel key={index} value={selectedTab} index={index}>
@@ -133,51 +165,87 @@ const ConversationPage = () => {
               Разговор от {conv.created}
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
-              Спикеры: {conv.speakers.length} | Фрагментов: {fragments.length}
+              Спикеры: {conv.speakers.length} | Фрагментов: {fragments.length} | Найдено: {filteredFragments.length}
             </Typography>
             <Divider sx={{ mb: 2 }} />
-            <List sx={{ bgcolor: 'background.paper' }}>
-              {fragments.map((fragment, fragIndex) => {
-                const style = getSpeakerStyle(fragment.speaker);
-                const bgColor = getClassColor(fragment); // Цвет по классу + спикеру
-                return (
-                  <ListItem
-                    key={fragIndex}
-                    alignItems="flex-start"
-                    sx={{
-                      ...style,
-                      mb: 2, // Увеличил отступ для теней
-                      width: '70%', // Полная ширина для правильной прижимки
-                    }}
-                  >
-                    <Box
+
+            {/* Контролы фильтрации: Поиск + Dropdown */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                placeholder="Поиск по словам..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                size="small"
+                sx={{ flex: 1 }}
+              />
+              <FormControl variant="outlined" size="small" sx={{ minWidth: 150 }}>
+                <InputLabel>Класс</InputLabel>
+                <Select
+                  value={selectedClass}
+                  onChange={(e) => setSelectedClass(e.target.value)}
+                  label="Класс"
+                >
+                  <MenuItem value="Все">Все</MenuItem>
+                  {uniqueClasses.map((cls) => (
+                    <MenuItem key={cls} value={cls}>{cls}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+
+            {filteredFragments.length > 0 ? (
+              <List sx={{ bgcolor: 'background.paper', width: '100%' }}>
+                {filteredFragments.map((fragment, fragIndex) => {
+                  const style = getSpeakerStyle(fragment.speaker);
+                  const bgColor = getClassColor(fragment); // Цвет по классу + спикеру
+                  return (
+                    <ListItem
+                      key={fragIndex}
+                      alignItems="flex-start"
                       sx={{
-                        p: 2,
-                        borderRadius: 2,
-                        maxWidth: '70%',
-                        wordBreak: 'break-word', // Для длинных текстов
-                        backgroundColor: bgColor, // Динамический цвет по классу + спикеру
-                        borderLeft: `3px solid ${bgColor === "#fafafa" ? "#ccc" : bgColor}`, // Легкая рамка слева для акцента
-                        boxShadow: 1, // Тень для пузыря сообщения (MUI shadow 1: 0px 1px 3px rgba(0,0,0,0.2))
-                        transition: 'box-shadow 0.2s ease', // Плавный hover-эффект
-                        '&:hover': {
-                          boxShadow: 3, // Усиленная тень при наведении (MUI shadow 3)
-                        },
+                        ...style,
+                        mb: 2, // Увеличил отступ для теней
+                        width: '100%', // Полная ширина для правильной прижимки
+                        justifyContent: 'stretch', // Растягивает содержимое по ширине
                       }}
                     >
-                      <Typography variant="body1" fontWeight="bold" gutterBottom>
-                        Спикер {fragment.speaker}: {fragment.text}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8em' }}>
-                        <strong>Время:</strong> {fragment.start} - {fragment.stop} ({fragment.duration})<br />
-                        <strong>Эмоция:</strong> {getEmotionLabel(fragment)}<br />
-                        <strong>Класс:</strong> {getClassLabel(fragment)}
-                      </Typography>
-                    </Box>
-                  </ListItem>
-                );
-              })}
-            </List>
+                      <Box
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          width: 'auto', // Динамическая ширина
+                          flex: 1, // Растягивается в родителе
+                          maxWidth: '80%', // Лимит, чтобы не растягивалось слишком
+                          wordBreak: 'break-word', // Для длинных текстов
+                          backgroundColor: bgColor, // Динамический цвет по классу + спикеру
+                          borderLeft: `3px solid ${bgColor === "#fafafa" ? "#ccc" : bgColor}`, // Легкая рамка слева для акцента
+                          boxShadow: 1, // Тень для пузыря сообщения
+                          transition: 'box-shadow 0.2s ease', // Плавный hover-эффект
+                          '&:hover': {
+                            boxShadow: 3, // Усиленная тень при наведении
+                          },
+                        }}
+                      >
+                        <Typography variant="body1" fontWeight="bold" gutterBottom>
+                          Спикер {fragment.speaker}: {fragment.text}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8em' }}>
+                          <strong>Время:</strong> {fragment.start} - {fragment.stop} ({fragment.duration})<br />
+                          <strong>Эмоция:</strong> {getEmotionLabel(fragment)}<br />
+                          <strong>Класс:</strong> {getClassLabel(fragment)}
+                        </Typography>
+                      </Box>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            ) : (
+              <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+                Фрагменты не найдены по текущим фильтрам.
+              </Typography>
+            )}
           </TabPanel>
         ))}
       </Box>
