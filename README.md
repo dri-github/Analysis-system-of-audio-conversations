@@ -1,13 +1,14 @@
 # Analysis-system-of-audio-conversations 
 
-SpearekRecognize Service:
-- Берёт файл разговора из специальной дирректории
-- Создает таску на обработку
-- По окончанию обработки загружает JSON файл в БД
+## Backend for Python:
+- POST /api/conversations?fname={file_name}&fpath={file_path} (JSON передается в теле) - добавление JSON отпаршеного разговора в БД
+- GET  /api/conversations - возвращает полный список всех разговоров
+- GET  /api/conversations/{id} - возвращает конкретный JSON разговора
 
-Analitics Service:
-- Получает GET /analyze - отображает HTML страницу (исходная)
-- Получает GET /analyze?id={speak_id} - отображает страницу определённого разговора (аналогично с пунктом выше)
-- Получает GET /analyze/stats - возвращает JSON со статистикой
+- ??? GET  /analyze/stats - возвращает JSON со статистикой (это под вопросом, примера данных не дали)
 
-<img width="548" height="435" alt="image" src="https://github.com/user-attachments/assets/3fa8e4c8-87a6-489d-b2c2-f3d703f524d6" />
+## Frontend for React:
+- GET  /analyze - основная HTML страница (можно сделать либо, отображение страницы но без подробностей с открытым заранее списком или сделать чтобы открывался последний добавленный диалог)
+- GET  /analyze?id={speak_id} - как и запрос выше, только для выбранного разговора
+
+<img width="548" height="435" alt="image" align="center" src="https://github.com/user-attachments/assets/3fa8e4c8-87a6-489d-b2c2-f3d703f524d6" />
