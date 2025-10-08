@@ -1,0 +1,3 @@
+2025-10-08 16:38:03,420 - main - INFO - System Ready
+2025-10-08 16:38:03,420 - main - INFO - System Starting
+2025-10-08 16:38:04,779 - main - ERROR - Failed to start monitoring: 403 Client Error: FORBIDDEN for url: https://demo.connect2ai.net/auth/access?username=&password=
