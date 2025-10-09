@@ -2,7 +2,7 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   typography: {
-    fontFamily: 'Merriweather', // Убедитесь, что шрифт подключён через Google Fonts
+    fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',// Убедитесь, что шрифт подключён через Google Fonts
   },
 });
 

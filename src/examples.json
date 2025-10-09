@@ -11744,7 +11744,8 @@
   "text": "",
   "status": "ready",
   "created": "2025-06-10 21:08:40",
-  "processed": "2025-06-10 21:11:09"
+  "processed": "2025-06-10 21:11:09",
+   "id": 1, "fname": "chat1.json"
 },
 {
   "model": "common",
@@ -23491,6 +23492,7 @@
   "text": "",
   "status": "ready",
   "created": "2025-06-10 21:08:40",
-  "processed": "2025-06-10 21:11:09"
+  "processed": "2025-06-10 21:11:09",
+  "id": 2, "fname": "chat2.json"
 }
 ]
