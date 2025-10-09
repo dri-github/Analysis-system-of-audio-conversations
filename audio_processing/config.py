@@ -31,3 +31,4 @@ class Config:
     API_TIMEOUT = 30  # Таймаут для API запросов
     MAX_RETRIES = 3
     API_MAX_RETRIES = 3  # Повторные попытки для API
+    MAX_CONCURRENT_TRANSCRIPTIONS = int(os.getenv("MAX_CONCURRENT_TRANSCRIPTIONS", 3))

@@ -1,30 +1,30 @@
 # workers/transcription_worker.py
 import os
-import requests
-import time
+import aiohttp
+import asyncio
 import json
-from typing import Optional, Dict, Any
+import time
+from typing import Optional, Dict, Any, List
 from pathlib import Path
 from config import Config
 from logging_config import get_component_logger
 
-# Инициализация логгера
 logger = get_component_logger("transcription_worker")
 
-class TranscriptionWorker:
+class AsyncTranscriptionWorker:
     def __init__(self):
         self.max_retries = Config.MAX_RETRIES
-        self.api_max_retries = Config.API_MAX_RETRIES
+        self.max_concurrent = Config.MAX_CONCURRENT_TRANSCRIPTIONS
         self.transcription_service_url = Config.TRANSCRIPTION_SERVICE_URL
         self.autorization_service_url = Config.AUTORIZATION_SERVICE_URL
-        self.api_service_url = Config.BACKEND_API_BASE
         self.api_endpoint_url = Config.API_ENDPOINT
         self.access_token = Config.TRANSCRIPTION_ACCESS_TOKEN
         self.login = Config.LOGIN
         self.password = Config.PASSWORD
+        # НЕ создаем семафор здесь - создадим его в каждом потоке
 
-    def _get_x_access_token(self) -> str:
-        """Реальный вызов API авторизации"""
+    async def _get_x_access_token(self) -> str:
+        """Асинхронная авторизация"""
         try:
             data = {
                 'username': self.login,
@@ -36,95 +36,79 @@ class TranscriptionWorker:
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
 
-            logger.info(
-                "authorization_request_sending",
-                authorization_url=self.autorization_service_url
-            )
-
-            response = requests.post(
-                self.autorization_service_url,
-                data=data,
-                headers=headers,
-                timeout=Config.TRANSCRIPTION_TIMEOUT
-            )
-            
-            if response.status_code == 200:
-                response_body = response.json()
-                access_token = response_body.get("x-access-token")
-                if access_token:
-                    logger.info(
-                        "authorization_successful",
-                        token_prefix=access_token[:10] + "..."
-                    )
-                    self.access_token = access_token
-                    return access_token
-                else:
-                    logger.error(
-                        "authorization_token_missing",
-                        response_body=response_body
-                    )
-                    raise ValueError("x-access-token not found in response body")
-            else:
-                logger.error(
-                    "authorization_failed",
-                    status_code=response.status_code,
-                    response_text=response.text[:200]
-                )
-                response.raise_for_status()
-                
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    self.autorization_service_url,
+                    data=data,
+                    headers=headers,
+                    timeout=aiohttp.ClientTimeout(total=Config.TRANSCRIPTION_TIMEOUT)
+                ) as response:
+                    
+                    if response.status == 200:
+                        response_body = await response.json()
+                        access_token = response_body.get("x-access-token")
+                        if access_token:
+                            logger.info("authorization_successful", token_prefix=access_token[:10] + "...")
+                            self.access_token = access_token
+                            return access_token
+                        else:
+                            raise ValueError("x-access-token not found")
+                    else:
+                        text = await response.text()
+                        logger.error("authorization_failed", status_code=response.status, response_text=text[:200])
+                        response.raise_for_status()
+                        
         except Exception as e:
-            logger.error(
-                "authorization_error",
-                error=str(e),
-                error_type=type(e).__name__
-            )
+            logger.error("authorization_error", error=str(e), error_type=type(e).__name__)
             raise
 
-    def process_audio_file(self, file_path: str) -> bool:
-        """Основная функция обработки аудиофайла"""
+    async def process_audio_files(self, file_paths: List[str], semaphore: asyncio.Semaphore) -> List[bool]:
+        """Асинхронная обработка нескольких файлов с переданным семафором"""
+        tasks = [self.process_audio_file(file_path, semaphore) for file_path in file_paths]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        # Обрабатываем исключения
+        final_results = []
+        for result in results:
+            if isinstance(result, Exception):
+                logger.error("async_processing_error", error=str(result))
+                final_results.append(False)
+            else:
+                final_results.append(result)
+                
+        return final_results
+
+    async def process_audio_file(self, file_path: str, semaphore: asyncio.Semaphore) -> bool:
+        """Асинхронная обработка одного файла с переданным семафором"""
         try:
             if not self._validate_file(file_path):
                 logger.error("file_validation_failed", file_path=file_path)
                 return False
             
-            transcription_result = self._call_transcription_service(file_path)
+            # Используем переданный семафор
+            async with semaphore:
+                transcription_result = await self._call_transcription_service(file_path)
+            
             if not transcription_result:
                 logger.error("transcription_failed", file_path=file_path)
                 return False
             
-            # Сохраняем JSON локально и отправляем на сервер
-            final_file_path = self._move_to_processed(transcription_result, file_path)
+            # Синхронные операции (файловая система)
+            json_file_path = self._move_to_processed(transcription_result, file_path)
             
-            # Отправляем на API
-            api_success = self._send_to_api(transcription_result, final_file_path)
+            # Асинхронная отправка на API
+            if json_file_path:
+                await self._send_to_api(transcription_result, json_file_path)
             
-            if api_success:
-                logger.info(
-                    "file_processing_completed",
-                    file_path=file_path,
-                    status="success",
-                    api_sent=True
-                )
-            else:
-                logger.warning(
-                    "file_processing_completed_but_api_failed",
-                    file_path=file_path,
-                    status="partial_success",
-                    api_sent=False
-                )
-            
-            return True  # Возвращаем True даже если API не удалось, т.к. файл обработан
+            logger.info("file_processing_completed", file_path=file_path, status="success")
+            return True
             
         except Exception as e:
-            logger.error(
-                "file_processing_error",
-                file_path=file_path,
-                error=str(e),
-                error_type=type(e).__name__
-            )
+            logger.error("file_processing_error", file_path=file_path, error=str(e))
             return False
 
     def _validate_file(self, file_path: str) -> bool:
+        # Синхронная проверка файла
         if not os.path.exists(file_path):
             logger.warning("file_not_exists", file_path=file_path)
             return False
@@ -136,37 +120,24 @@ class TranscriptionWorker:
         
         return True
 
-    def _call_transcription_service(self, file_path: str) -> Optional[Dict[str, Any]]:
+    async def _call_transcription_service(self, file_path: str) -> Optional[Dict[str, Any]]:
+        """Асинхронный вызов сервиса транскрипции с повторными попытками"""
         for attempt in range(self.max_retries):
             try:
-                logger.debug(
-                    "transcription_service_call_attempt",
-                    file_path=file_path,
-                    attempt=attempt + 1
-                )
-                return self._real_transcription_service(file_path)
+                logger.debug("transcription_service_call_attempt", file_path=file_path, attempt=attempt + 1)
+                return await self._real_transcription_service(file_path)
                 
-            except requests.exceptions.RequestException as e:
-                logger.warning(
-                    "transcription_service_attempt_failed",
-                    file_path=file_path,
-                    attempt=attempt + 1,
-                    error=str(e)
-                )
+            except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+                logger.warning("transcription_service_attempt_failed", file_path=file_path, attempt=attempt + 1, error=str(e))
                 if attempt == self.max_retries - 1:
                     raise
-                time.sleep(2 ** attempt)
+                await asyncio.sleep(2 ** attempt)
 
-    def _real_transcription_service(self, file_path: str) -> Dict[str, Any]:
+    async def _real_transcription_service(self, file_path: str) -> Dict[str, Any]:
+        """Асинхронный запрос к сервису транскрипции"""
         params = {
-            'speakers': 0,
-            'speaker_counter': 0,
-            'async': 0,
-            'punctuation': 0,
-            'normalization': 0,
-            'toxicity': 0,
-            'emotion': 0,
-            'voice_analyzer': 0,
+            'speakers': 0, 'speaker_counter': 0, 'async': 0, 'punctuation': 0,
+            'normalization': 0, 'toxicity': 0, 'emotion': 0, 'voice_analyzer': 0,
             'vad': 'webrtc',
             'classifiers': '{"smc":{"Оценка_разговора_1":{"correction":1,"confidenceThreshold":40}},"see":{"FIO":{"correction":1,"confidenceThreshold":40}}}'
         }
@@ -176,43 +147,80 @@ class TranscriptionWorker:
             'x-access-token': self.access_token
         }
         
+        # Читаем файл в памяти
         with open(file_path, 'rb') as audio_file:
-            files = {
-                'wav': (
-                    os.path.basename(file_path),
-                    audio_file,
-                    f'audio/{self._get_file_extension(file_path)}'
-                )
-            }
-            
-            logger.info(
-                "transcription_request_sending",
-                file_path=file_path
-            )
-            
-            response = requests.post(
-                self.transcription_service_url,
-                params=params,
-                headers=headers,
-                files=files,
-                timeout=Config.TRANSCRIPTION_TIMEOUT
-            )
+            file_data = audio_file.read()
         
-        if response.status_code == 200:
-            logger.info(
-                "transcription_successful",
-                file_path=file_path,
-                response_keys=list(response.json().keys()) if response.text else []
-            )
-            return response.json()
-        else:
-            logger.error(
-                "transcription_api_error",
-                file_path=file_path,
-                status_code=response.status_code,
-                response_text=response.text[:200] if response.text else "empty response"
-            )
-            response.raise_for_status()
+        filename = os.path.basename(file_path)
+        
+        # Создаем FormData для асинхронной отправки
+        data = aiohttp.FormData()
+        data.add_field('wav', file_data, filename=filename, content_type=f'audio/{self._get_file_extension(file_path)}')
+        
+        # Добавляем параметры
+        for key, value in params.items():
+            data.add_field(key, str(value))
+        
+        logger.info("transcription_request_sending", file_path=file_path)
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                self.transcription_service_url,
+                data=data,
+                headers=headers,
+                timeout=aiohttp.ClientTimeout(total=Config.TRANSCRIPTION_TIMEOUT)
+            ) as response:
+                
+                if response.status == 200:
+                    result = await response.json()
+                    logger.info("transcription_successful", file_path=file_path)
+                    return result
+                else:
+                    text = await response.text()
+                    logger.error("transcription_api_error", file_path=file_path, status_code=response.status)
+                    raise aiohttp.ClientResponseError(
+                        request_info=response.request_info,
+                        history=response.history,
+                        status=response.status,
+                        message=text[:200]
+                    )
+
+    async def _send_to_api(self, json_body: Dict[str, Any], file_path: str) -> bool:
+        """Асинхронная отправка на API"""
+        for attempt in range(Config.API_MAX_RETRIES):
+            try:
+                filename = os.path.basename(file_path)
+                normalized_path = file_path.replace('\\', '/')
+                
+                params = {'file_name': filename, 'fpath': normalized_path}
+                
+                logger.info("api_send_attempt", file_path=file_path, attempt=attempt + 1)
+                
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(
+                        self.api_endpoint_url,
+                        params=params,
+                        json=json_body,
+                        timeout=aiohttp.ClientTimeout(total=Config.API_TIMEOUT)
+                    ) as response:
+                        
+                        if response.status == 200:
+                            logger.info("api_send_successful", file_path=file_path)
+                            return True
+                        else:
+                            text = await response.text()
+                            logger.warning("api_send_failed", file_path=file_path, status_code=response.status)
+                            if attempt == Config.API_MAX_RETRIES - 1:
+                                return False
+                            await asyncio.sleep(2 ** attempt)
+                            
+            except Exception as e:
+                logger.warning("api_send_error", file_path=file_path, attempt=attempt + 1, error=str(e))
+                if attempt == Config.API_MAX_RETRIES - 1:
+                    return False
+                await asyncio.sleep(2 ** attempt)
+        
+        return False
 
     def _get_file_extension(self, file_path: str) -> str:
         ext = os.path.splitext(file_path)[1].lower().lstrip('.')
@@ -226,15 +234,12 @@ class TranscriptionWorker:
         return mime_map.get(ext, 'mpeg')
     
     def _move_to_processed(self, json_body: Dict[str, Any], file_path: str) -> str:
-        """Перемещает файл и создает JSON, возвращает путь к JSON файлу"""
         try:
             filename = os.path.basename(file_path)
             destination = os.path.join(Config.PROCESSED_FOLDER, filename)
             
-            # Перемещаем аудиофайл
             os.rename(file_path, destination)
             
-            # Создаем JSON файл
             json_filename = os.path.splitext(filename)[0]
             json_file_path = self.create_json_file(
                 data=json_body,
@@ -243,35 +248,17 @@ class TranscriptionWorker:
             )
             
             if json_file_path:
-                logger.info(
-                    "json_file_created_successfully",
-                    file_path=file_path,
-                    json_path=json_file_path
-                )
+                logger.info("json_file_created_successfully", file_path=file_path, json_path=json_file_path)
             else:
-                logger.error(
-                    "json_file_creation_failed",
-                    file_path=file_path
-                )
-                return destination
+                logger.error("json_file_creation_failed", file_path=file_path)
                 
-            logger.info(
-                "file_moved_to_processed",
-                original_path=file_path,
-                destination_path=destination,
-                json_path=json_file_path
-            )
+            logger.info("file_moved_to_processed", original_path=file_path, destination_path=destination)
             
             return json_file_path
             
         except Exception as e:
-            logger.error(
-                "file_processing_cleanup_error",
-                file_path=file_path,
-                error=str(e),
-                error_type=type(e).__name__
-            )
-            return file_path  # Возвращаем оригинальный путь в случае ошибки
+            logger.error("file_processing_cleanup_error", file_path=file_path, error=str(e))
+            return file_path
 
     def create_json_file(
         self,
@@ -281,7 +268,6 @@ class TranscriptionWorker:
         ensure_ascii: bool = False,
         indent: int = 2
     ) -> Optional[str]:
-        """Создает JSON файл и возвращает путь к нему"""
         try:
             Path(folder_path).mkdir(parents=True, exist_ok=True)
             
@@ -293,112 +279,17 @@ class TranscriptionWorker:
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=ensure_ascii, indent=indent)
             
-            logger.debug(
-                "json_file_created",
-                file_path=str(file_path),
-                data_size=len(str(data))
-            )
             return str(file_path)
             
         except Exception as e:
-            logger.error(
-                "json_file_creation_error",
-                folder_path=folder_path,
-                filename=filename,
-                error=str(e),
-                error_type=type(e).__name__
-            )
+            logger.error("json_file_creation_error", folder_path=folder_path, filename=filename, error=str(e))
             return None
-    def _send_to_api(self, json_body: Dict[str, Any], file_path: str) -> bool:
-        """Отправляет JSON данные на API с повторными попытками"""
-        for attempt in range(self.api_max_retries):
-            try:
-                # НОРМАЛИЗУЕМ ПУТЬ - заменяем обратные слеши на прямые
-                normalized_path = file_path.replace('\\', '/')
-                filename = os.path.basename(normalized_path)
-            
-                logger.info(
-                    "api_send_attempt",
-                    file_path=normalized_path,
-                    original_path=file_path,  # Логируем оригинальный путь для отладки
-                    attempt=attempt + 1,
-                    api_endpoint=self.api_endpoint_url
-                )
-            
-                # Подготавливаем параметры с нормализованным путем
-                params = {
-                    'file_name': filename,
-                    'fpath': normalized_path  # Используем нормализованный путь
-                }
-            
-                # Отправляем запрос
-                response = requests.post(
-                    self.api_endpoint_url,
-                    params=params,
-                    json=json_body,
-                    timeout=Config.API_TIMEOUT
-                )
-            
-                if response.status_code == 200:
-                    logger.info(
-                        "api_send_successful",
-                        file_path=normalized_path,
-                        attempt=attempt + 1,
-                        response_status=response.status_code
-                    )
-                    return True
-                else:
-                    logger.warning(
-                        "api_send_failed",
-                        file_path=normalized_path,
-                        attempt=attempt + 1,
-                        status_code=response.status_code,
-                        response_text=response.text[:200] if response.text else "empty response"
-                    )
-                
-                    if attempt == self.api_max_retries - 1:
-                        logger.error(
-                            "api_send_final_failure",
-                            file_path=normalized_path,
-                            total_attempts=self.api_max_retries
-                        )
-                        return False
-                
-                    time.sleep(2 ** attempt)
-                
-            except requests.exceptions.RequestException as e:
-                logger.warning(
-                    "api_send_network_error",
-                    file_path=normalized_path,
-                    attempt=attempt + 1,
-                    error=str(e),
-                    error_type=type(e).__name__
-                )
-            
-                if attempt == self.api_max_retries - 1:
-                    logger.error(
-                        "api_send_network_final_failure",
-                        file_path=normalized_path,
-                        total_attempts=self.api_max_retries
-                    )
-                    return False
-            
-                time.sleep(2 ** attempt)
-        
-            except Exception as e:
-                logger.error(
-                    "api_send_unexpected_error",
-                    file_path=normalized_path,
-                    attempt=attempt + 1,
-                    error=str(e),
-                    error_type=type(e).__name__
-                )
-                return False
-    
-        return False
-    
-# Глобальный экземпляр для прямого вызова
-transcription_worker = TranscriptionWorker()
 
-def process_audio_file(file_path: str) -> bool:
-    return transcription_worker.process_audio_file(file_path)
+# Глобальный экземпляр
+transcription_worker = AsyncTranscriptionWorker()
+
+async def process_audio_files(file_paths: List[str], semaphore: asyncio.Semaphore) -> List[bool]:
+    return await transcription_worker.process_audio_files(file_paths, semaphore)
+
+async def process_audio_file(file_path: str, semaphore: asyncio.Semaphore) -> bool:
+    return await transcription_worker.process_audio_file(file_path, semaphore)
