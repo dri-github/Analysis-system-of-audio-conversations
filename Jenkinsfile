@@ -4,7 +4,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("ar_ui", "-f ui/Dockerfile .")
+                    docker.build("ar_ui", "-f ui/Dockerfile ./ui")
                 }
             }
         }
