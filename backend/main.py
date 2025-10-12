@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 import databases
-import os
 import json
+import uvicorn  # добавляем
 
 # --- Подключение к PostgreSQL ---
 DATABASE_URL = "postgresql://audrec_conv_s:service@localhost:5432/mydb"
@@ -14,7 +14,7 @@ app = FastAPI(title="Conversations API")
 class Conversation(BaseModel):
     file_data: dict
 
-# --- События старта и завершения ---
+# --- Lifespan для подключения к БД ---
 @app.on_event("startup")
 async def startup():
     await database.connect()
@@ -56,13 +56,16 @@ async def get_conversation(conversation_id: int):
         raise HTTPException(status_code=404, detail="Conversation not found")
     return dict(result)
 
-# --- GET /analyze/stats (через функции) ---
+# --- GET /analyze/stats ---
 @app.get("/analyze/stats")
 async def analyze_stats():
-    # Используем get_conversations(), чтобы посчитать количество записей
     query = "SELECT COUNT(*) AS total FROM public.get_conversations()"
     result = await database.fetch_one(query=query)
     return {"total_conversations": result["total"]}
+
+# --- Авто-запуск через python main.py ---
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
 
 
 
