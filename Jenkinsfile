@@ -10,7 +10,6 @@ pipeline {
         }
         stage('Run Docker Container') {
             steps {
-                sh 'echo Success'
                 script {
                     // Запустите контейнер из созданного образа
                     // docker.image("ar_ui").run()
