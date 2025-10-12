@@ -4,7 +4,15 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("ar_ui", "-f ui/Dockerfile ./ui")
+                    dir('ui') {
+                        docker.build("ar_ui", "-f ./Dockerfile .")
+                    }
+                    dir('backend') {
+                        docker.build("ar_back", "-f ./Dockerfile .")
+                    }
+                    dir('audio_processing') {
+                        docker.build("ar_audio_proc", "-f ./Dockerfile .")
+                    }
                 }
             }
         }
