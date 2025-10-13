@@ -107,9 +107,10 @@ const ConversationPage = () => {
         height: '100vh',
         background:'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         zIndex: -1,
+        overflowY: 'auto', // Добавляем скролл для viewport (страницы)
       }}
     >
-      <Box sx={styles.container}>
+      <Box sx={{ ...styles.container, height: 'auto', minHeight: '100vh', overflowY: 'auto' }}> {/* Переопределяем height на minHeight для роста и скролла */}
         <Box sx={styles.analysisHeader}>
           <Typography variant="h5" color="white" fontSize={40}>
             Анализ разговора
@@ -122,8 +123,8 @@ const ConversationPage = () => {
           )}
         </Box>
 
-        <Box sx={styles.mainContent}>
-          <Box sx={styles.leftPanel}>
+        <Box sx={{ ...styles.mainContent, overflow: 'hidden' }}> {/* Убираем overflow: 'auto' из mainContent */}
+          <Box sx={{ ...styles.leftPanel, overflowY: 'auto' }}> {/* Добавляем скролл для левой панели */}
             <Tabs
               orientation="vertical"
               variant="scrollable"
@@ -135,7 +136,7 @@ const ConversationPage = () => {
               {conversations.map((conv, index) => (
                 <Tab
                   key={conv.id}
-                  label={`Разговор ${conv.id} (${formatDate(conv.date_time)})`}
+                  label={`${conv.file_name}`}
                   id={`vertical-tab-${index}`}
                   aria-controls={`vertical-tabpanel-${index}`}
                   sx={styles.tab}
@@ -143,9 +144,20 @@ const ConversationPage = () => {
               ))}
             </Tabs>
           </Box>
-          <Box sx={styles.rightPanel}>
+          <Box sx={{ ...styles.rightPanel, minHeight: 0, height: '100%' }}> {/* Добавляем height: '100%' для rightPanel */}
             {conversations.map((conv, index) => (
-              <TabPanel key={conv.id} value={selectedTab} index={index}>
+              <TabPanel 
+                key={conv.id} 
+                value={selectedTab} 
+                index={index}
+                sx={{ 
+                  flex: 1, 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  width: '100%',
+                  height: '100%' // Добавляем height: '100%' для TabPanel
+                }} 
+              >
                 {/* Фиксированная секция со статистикой и фильтрами */}
                 <Box sx={styles.fixedSection}>
                   {/* Передаем file_data в StatsPanel как основной объект разговора */}
@@ -182,7 +194,7 @@ const ConversationPage = () => {
                 </Box>
 
                 {/* Прокручиваемая секция с сообщениями */}
-                <Box sx={styles.scrollableSection}>
+                <Box sx={{ ...styles.scrollableSection, height: '100%' }}> {/* Добавляем height: '100%' для scrollableSection */}
                   <MessageList
                     fragments={fragments}
                     searchTerm={searchTerm}

@@ -13,14 +13,16 @@ const MessageItem = ({ fragment }) => {
       sx={{
         ...style,
         mb: 2,
-        width: '100%',
+        width: '80%',
         justifyContent: 'stretch',
+        
       }}
     >
       <Box
         sx={{
           p: 2,
           borderRadius: 2,
+          borderBottomRightRadius:0.5,
           width: 'auto',
           flex: 1,
           maxWidth: '80%',
@@ -32,13 +34,23 @@ const MessageItem = ({ fragment }) => {
           '&:hover': { boxShadow: 3 },
         }}
       >
-        <Typography variant="body1" fontWeight="bold" gutterBottom color='white'>
-          Спикер {fragment.speaker}: {fragment.text}
+        <Typography variant="body1" fontWeight="bold" gutterBottom color='white' sx={{ fontSize: '1.4em' }}>
+          {fragment.text}
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8em' }}>
-          <strong>Время:</strong> {fragment.start} - {fragment.stop} ({fragment.duration})<br />
-          <strong>Эмоция:</strong> {getEmotionLabel(fragment)}<br />
-          <strong>Класс:</strong> {getClassLabel(fragment)}
+        
+        {/* Класс как отдельная строка, как на скрине */}
+        <Typography variant="body2" fontWeight="medium" gutterBottom color='white' sx={{ fontSize: '1em' }}>
+          {getClassLabel(fragment)} | {getEmotionLabel(fragment)}
+        </Typography>
+        
+        {/* Время как отдельная строка, без duration для краткости */}
+        <Typography variant="body2" gutterBottom color='white' sx={{ fontSize: '1em' }}>
+          {fragment.start} - {fragment.stop}
+        </Typography>
+        
+        {/* Нижняя строка с метриками */}
+        <Typography variant="caption" color='white' sx={{ fontSize: '1rem', opacity: 0.9 }}>
+          Спикер {fragment.speaker} | Уверенность: {fragment.classConfidence?.toFixed(2) || '1.00'}
         </Typography>
       </Box>
     </ListItem>

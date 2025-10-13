@@ -3,24 +3,25 @@ export const styles = {
     display: 'flex',
     flexDirection: 'column',
     width: '80%',
-    maxWidth: '1200px',
+    maxWidth: '1400px',
     margin: '0 auto',
-    height: '100vh', // Фиксированная высота на весь экран
+    marginTop: '10px',
+    minHeight: '100vh', // minHeight вместо height, чтобы мог расти
     backgroundColor: '#f5f5f5',
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    // Убираем скролл у всего контейнера
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    overflowY: 'auto', // Скролл для всей страницы, если контент больше экрана
   },
   mainContent: {
     display: 'flex',
     flex: 1,
-    overflow: 'auto', // Убираем скролл у основного контента
+    minHeight: 0, // Важно для flex в overflow-контейнере
   },
   analysisHeader: {
     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     padding: 2,
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 0,
     marginBottom: 2,
@@ -28,31 +29,31 @@ export const styles = {
     '& h5': {
       marginBottom: 0.5,
     },
-    flexShrink: 0, // Запрещаем сжатие хедера
+    flexShrink: 0,
   },
   leftPanel: {
     width: '25%',
     borderRight: '1px solid #e0e0e0',
-    // Прокрутка только для списка вкладок
     backgroundColor: '#fff',
+    overflowY: 'auto', // Скролл для вкладок, если много
+    flexShrink: 0,
   },
   rightPanel: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
-    // Убираем скролл у правой панели
     py: 3,
     px: 2,
     boxShadow: 'inset -2px 0 8px rgba(0,0,0,0.05)',
     boxSizing: 'border-box',
+    minHeight: 0, // Важно для flex
   },
   fixedSection: {
-    flexShrink: 0, // Фиксированная высота
+    flexShrink: 0,
     backgroundColor: '#f5f5f5',
     padding: 2,
     borderBottom: '1px solid #e0e0e0',
   },
-  
   filterControls: {
     display: 'flex',
     gap: 2,
@@ -70,6 +71,7 @@ export const styles = {
     textTransform: 'none',
     justifyContent: 'flex-start',
     minWidth: 'auto',
+    fontSize: '1.3rem',
   },
   statsPanel: {
     p: 2,
@@ -78,16 +80,18 @@ export const styles = {
     boxShadow: 1,
     backgroundColor: '#fff',
   },
-  statsGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: 1,
-  },
+
   messageList: {
     bgcolor: 'background.paper',
     width: '100%',
-    height: '100%', // Добавляем высоту
-    overflowY: 'auto', // Гарантируем прокрутку
+    flex: 1, // Заполняет доступное пространство
+    overflowY: 'auto', // Независимый скролл списка
+    maxHeight: 'none', // Убираем ограничение, если было
+  },
+  scrollableSection: { // Используй этот стиль для Box вокруг MessageList в ConversationPage
+    flex: 1,
+    display: 'flex',
+    overflow: 'hidden', // Скрываем скролл здесь, передаем в List
   },
   progressContainer: {
     display: 'flex',
@@ -134,19 +138,23 @@ export const styles = {
     lineHeight: 1.2,
     marginTop: 1,
   },
-  statsGrid: {
-    display: 'grid',
-    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-    gap: 1.5,
+  statsGrid: { // Для избежания дубликата
+   display: 'flex',
+    gap: 2,
+    mb: 2,
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
     padding: 1,
     backgroundColor: '#ffffff',
     borderRadius: 4,
     boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
     '& > *': {
-      display: 'flex',
+      
+      
       alignItems: 'center',
-      padding: '0rem',
-      fontSize: '1.8rem',
+      paddingLeft: '3rem',
+      paddingRight: '3rem',
+      fontSize: '1.7rem',
       '& strong': {
         color: '#000000ff',
         marginRight: 1,
