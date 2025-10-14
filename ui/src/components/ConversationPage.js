@@ -19,7 +19,7 @@ const ConversationPage = () => {
     const fetchInitialData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3001/api/conversations');
+        const response = await fetch('http://api:8000/api/conversations');
         if (!response.ok) throw new Error('Ошибка при загрузке списка разговоров');
         const conversationsData = await response.json();
         
@@ -42,7 +42,7 @@ const ConversationPage = () => {
   const fetchConversation = async (conversationId) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3001/api/conversations/${conversationId}`);
+      const response = await fetch(`http://api:8000/api/conversations/${conversationId}`);
       if (!response.ok) throw new Error('Ошибка при загрузке разговора');
       const data = await response.json();
       
