@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        INT_NETWORK_NAME = 'audio_rec_int_net'
+        INT_NETWORK_NAME = 'audio_rec_system_int_net'
         POSTGRES_NETWORK_NAME = 'pg_database'
 
         VOLUME_UPLOADS = '~/uploads'
