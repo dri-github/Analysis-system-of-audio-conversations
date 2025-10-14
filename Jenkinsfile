@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         INT_NETWORK_NAME = 'audio_rec_system_int_net'
-        POSTGRES_NETWORK_NAME = 'pg_database'
+        POSTGRES_NETWORK_NAME = 'pg_database_default'
 
         VOLUME_UPLOADS = '~/uploads'
     }
