@@ -7,7 +7,7 @@ import json
 import uvicorn  # добавляем
 
 # --- Подключение к PostgreSQL ---
-DATABASE_URL = "postgresql://audrec_conv_s:service@10.200.115.155:5432/mydb"
+DATABASE_URL = "postgresql://audrec_conv_s:service@postgres:5432/audio_rec"
 database = databases.Database(DATABASE_URL)
 
 app = FastAPI(title="Conversations API")
