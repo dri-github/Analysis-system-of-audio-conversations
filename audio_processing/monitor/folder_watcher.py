@@ -5,6 +5,7 @@ from pathlib import Path
 from worker_manager import worker_manager
 from config import Config
 from logging_config import get_component_logger
+import shutil
 
 # Инициализация логгера
 logger = get_component_logger("folder_watcher")
@@ -40,7 +41,7 @@ class FolderWatcher:
         processing_path = os.path.join(Config.PROCESSING_FOLDER, filename)
         
         try:
-            os.rename(file_path, processing_path)
+            shutil.move(file_path, processing_path)
             logger.info(
                 "file_moved_to_processing",
                 original_path=file_path,
@@ -168,4 +169,5 @@ def start_monitoring():
         )
     finally:
         worker_manager.stop_workers()
+
         logger.info("monitoring_cleanup_completed")
