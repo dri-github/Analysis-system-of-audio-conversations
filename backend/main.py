@@ -1,14 +1,24 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Body, Query
+from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional, Dict, Any
 from pydantic import BaseModel
 import databases
 import json
 import uvicorn  # добавляем
 
 # --- Подключение к PostgreSQL ---
-DATABASE_URL = "postgresql://audrec_conv_s:service@localhost:5432/mydb"
+DATABASE_URL = "postgresql://audrec_conv_s:service@10.200.115.155:5432/mydb"
 database = databases.Database(DATABASE_URL)
 
 app = FastAPI(title="Conversations API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Разрешить всем источникам (в продакшене укажите конкретные домены)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --- Pydantic модель для входящего JSON ---
 class Conversation(BaseModel):
@@ -25,12 +35,12 @@ async def shutdown():
 
 # --- POST /api/conversations ---
 @app.post("/api/conversations")
-async def add_conversation(conversation: Conversation, fname: str = Query(...), fpath: str = Query(...)):
+async def add_conversation(conversation: Dict[str, Any] = Body(...), fname: str = Query(...), fpath: str = Query(...)):
     query = """
-    SELECT public.load_conversation(:file_data::jsonb, :file_name, :file_path) AS id
+    SELECT public.load_conversation(CAST(:file_data AS jsonb), :file_name, :file_path) AS id
     """
     values = {
-        "file_data": json.dumps(conversation.file_data),
+        "file_data": json.dumps(conversation),
         "file_name": fname,
         "file_path": fpath
     }
@@ -54,7 +64,17 @@ async def get_conversation(conversation_id: int):
     result = await database.fetch_one(query=query, values={"id": conversation_id})
     if not result:
         raise HTTPException(status_code=404, detail="Conversation not found")
-    return dict(result)
+
+    data = dict(result)
+    # Парсим file_data из строки в JSON-объект
+    if "file_data" in data and isinstance(data["file_data"], str):
+        try:
+            data["file_data"] = json.loads(data["file_data"])
+        except json.JSONDecodeError:
+            # Если вдруг невалидный JSON, оставляем как есть
+            pass
+
+    return data
 
 # --- GET /analyze/stats ---
 @app.get("/analyze/stats")
@@ -66,9 +86,3 @@ async def analyze_stats():
 # --- Авто-запуск через python main.py ---
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
-
-
-
-#curl -X POST "http://127.0.0.1:8000/api/conversations?fname=chat1.json&fpath=/data/chat1.json" \
-#-H "Content-Type: application/json" \
-#-d '{"file_data": {"messages":[{"user":"Alice","text":"Привет"},{"user":"Bob","text":"Привет, как дела?"}]}}'
