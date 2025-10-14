@@ -11,8 +11,8 @@ class Config:
     JSON_FOLDER = os.getenv("JSON_FOLDER", "./app/json_output")
     
     # Настройки API
-    BACKEND_API_BASE = os.getenv("BACKEND_API", "http://api:5000/api")
-    API_ENDPOINT = os.getenv("API_ENDPOINT", "http://api:5000/api/conversations")
+    BACKEND_API_BASE = os.getenv("BACKEND_API", "http://api:8000/api")
+    API_ENDPOINT = os.getenv("API_ENDPOINT", "http://api:8000/api/conversations")
     
     # Настройки транскрипции
     TRANSCRIPTION_SERVICE_URL = "https://demo.connect2ai.net/spr/stt/big"
@@ -32,3 +32,4 @@ class Config:
     MAX_RETRIES = 3
 
     API_MAX_RETRIES = 3  # Повторные попытки для API
+
