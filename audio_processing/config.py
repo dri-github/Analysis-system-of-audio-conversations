@@ -11,11 +11,11 @@ class Config:
     JSON_FOLDER = os.getenv("JSON_FOLDER", "./app/json_output")
     
     # Настройки API
-    BACKEND_API_BASE = os.getenv("BACKEND_API", "http://localhost:5000/api")
-    API_ENDPOINT = os.getenv("API_ENDPOINT", "http://localhost:5000/api/conversations")
+    BACKEND_API_BASE = os.getenv("BACKEND_API", "http://api:5000/api")
+    API_ENDPOINT = os.getenv("API_ENDPOINT", "http://api:5000/api/conversations")
     
     # Настройки транскрипции
-    TRANSCRIPTION_SERVICE_URL = "https://demo.connect2ai.net/spr/stt/common"
+    TRANSCRIPTION_SERVICE_URL = "https://demo.connect2ai.net/spr/stt/big"
     AUTORIZATION_SERVICE_URL = os.getenv("AUTORIZATION_SERVICE_URL", "https://demo.connect2ai.net/spr/auth/signin")
     TRANSCRIPTION_ACCESS_TOKEN = os.getenv("TRANSCRIPTION_ACCESS_TOKEN", "")
     LOGIN = os.getenv("LOGIN", "")
@@ -30,4 +30,5 @@ class Config:
     TRANSCRIPTION_TIMEOUT = 300
     API_TIMEOUT = 30  # Таймаут для API запросов
     MAX_RETRIES = 3
+
     API_MAX_RETRIES = 3  # Повторные попытки для API
