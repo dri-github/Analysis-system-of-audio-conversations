@@ -27,9 +27,9 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker.image("audio_rec_api").run("--hostname api --network ${INT_NETWORK_NAME} --network ${POSTGRES_NETWORK_NAME}")
-                    docker.image("audio_rec_ui").run("--hostname ui --network ${INT_NETWORK_NAME}")
-                    docker.image("audio_rec_proc").run("--network ${INT_NETWORK_NAME} -v ${VOLUME_UPLOADS}:/app/app/audio_uploads")
+                    docker.image("audio_rec_api").run("--rm --network ${INT_NETWORK_NAME}  --network-alias api --network ${POSTGRES_NETWORK_NAME} --network-alias api-external")
+                    docker.image("audio_rec_ui").run("--rm --network ${INT_NETWORK_NAME} --network-alia ui")
+                    docker.image("audio_rec_proc").run("--rm --network ${INT_NETWORK_NAME} -v ${VOLUME_UPLOADS}:/app/app/audio_uploads")
                 }
             }
         }
