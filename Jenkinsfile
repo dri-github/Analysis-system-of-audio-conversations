@@ -26,13 +26,25 @@ pipeline {
         }
         stage('Run Docker Container') {
             steps {
-                script {
-                    docker.image("audio_rec_api").withRun("--rm --network ${POSTGRES_NETWORK_NAME}") { c ->
-                        sh "docker network connect --alias api ${INT_NETWORK_NAME} ${c.id}"
-                    }
-                    //docker.image("audio_rec_ui").run("--rm --network ${INT_NETWORK_NAME} --network-alias ui")
-                    //docker.image("audio_rec_proc").run("--rm --network ${INT_NETWORK_NAME} -v ${VOLUME_UPLOADS}:/app/app/audio_uploads")
-                }
+                sh 'docker stop nginx-gateway'
+        
+                sh 'docker stop audio_rec_system_proc || true && docker rm audio_rec_system_proc || true'
+                sh 'docker stop audio_rec_system_ui || true && docker rm audio_rec_system_ui || true'
+                sh 'docker stop audio_rec_system_api || true && docker rm audio_rec_system_api || true'
+        
+                sh 'docker create --name audio_rec_system_api --network ${POSTGRES_NETWORK_NAME}" audio_rec_api'
+                sh 'docker create --name audio_rec_system_ui audio_rec_ui'
+                sh 'docker create --name audio_rec_system_proc -v ${VOLUME_UPLOADS}:/app/app/audio_uploads audio_rec_proc'
+        
+                sh 'docker network connect --alias api ${INT_NETWORK_NAME} audio_rec_system_api'
+                sh 'docker network connect --alias ui ${INT_NETWORK_NAME} audio_rec_system_ui'
+                sh 'docker network connect --alias proc ${INT_NETWORK_NAME} audio_rec_system_proc'
+        
+                sh 'docker start audio_rec_system_api'
+                sh 'docker start audio_rec_system_ui'
+                sh 'docker start audio_rec_system_proc'
+        
+                sh 'docker start nginx-gateway'
             }
         }
     }
