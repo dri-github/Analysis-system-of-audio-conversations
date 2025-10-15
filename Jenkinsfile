@@ -32,7 +32,7 @@ pipeline {
                 sh 'docker stop audio_rec_system_ui || true && docker rm audio_rec_system_ui || true'
                 sh 'docker stop audio_rec_system_api || true && docker rm audio_rec_system_api || true'
         
-                sh 'docker create --name audio_rec_system_api --network ${POSTGRES_NETWORK_NAME}" audio_rec_api'
+                sh 'docker create --name audio_rec_system_api --network ${POSTGRES_NETWORK_NAME} audio_rec_api'
                 sh 'docker create --name audio_rec_system_ui audio_rec_ui'
                 sh 'docker create --name audio_rec_system_proc -v ${VOLUME_UPLOADS}:/app/app/audio_uploads audio_rec_proc'
         
