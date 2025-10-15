@@ -19,16 +19,16 @@ export const getSpeakerStyle = (speakerId) => {
 
 // Функция для цвета по классу (с базовым оттенком по спикеру)
 export const getClassColor = (fragment) => {
-  const className = fragment.classifiers?.smc?.["Оценка_разговора_1"]?.classes?.[0]?.class || "N/A";
+  const className = fragment.classifiers?.smc?.["Скрипты1"]?.classes?.[0]?.class || "N/A";
   const colorMap = {
     "Приветствие": "#53d653ff",
     "Общие вопросы": "#53a5e0ff",
     "Запрос информации": "#d0963aff",
     "Жалоба": "#f44d66ff",
     "Возражения клиента": "#bf70cbff",
-    "завершение_сессии": "#e65e5eff",
+    "Завершение разговора": "#e65e5eff",
     "Оператор": "#3fbaf3ff",
-    "N/A": "#fafafa",
+    "N/A": "#fa8888",
   };
   let baseColor = colorMap[className] || "#fafafa";
 
