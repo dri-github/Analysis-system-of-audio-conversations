@@ -159,16 +159,16 @@ class TranscriptionWorker:
 
     def _real_transcription_service(self, file_path: str) -> Dict[str, Any]:
         params = {
-            'speakers': 0,
+            'speakers': 1,
             'speaker_counter': 0,
             'async': 0,
             'punctuation': 0,
             'normalization': 0,
-            'toxicity': 0,
-            'emotion': 0,
-            'voice_analyzer': 0,
+            'toxicity': 1,
+            'emotion': 1,
+            'voice_analyzer': 1,
             'vad': 'webrtc',
-            'classifiers': '{"smc":{"Оценка_разговора_1":{"correction":1,"confidenceThreshold":40}},"see":{"FIO":{"correction":1,"confidenceThreshold":40}}}'
+            'classifiers': '{"smc":{"Скрипты1":{"correction":1,"confidenceThreshold":40}},"see":{"FIO":{"correction":1,"confidenceThreshold":40}}}'
         }
         
         headers = {
@@ -403,3 +403,4 @@ transcription_worker = TranscriptionWorker()
 def process_audio_file(file_path: str) -> bool:
 
     return transcription_worker.process_audio_file(file_path)
+
