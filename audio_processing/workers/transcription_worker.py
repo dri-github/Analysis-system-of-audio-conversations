@@ -327,7 +327,7 @@ class TranscriptionWorker:
             
                 # Подготавливаем параметры с нормализованным путем
                 params = {
-                    'file_name': filename,
+                    'fname': filename,
                     'fpath': normalized_path  # Используем нормализованный путь
                 }
             
@@ -401,4 +401,5 @@ class TranscriptionWorker:
 transcription_worker = TranscriptionWorker()
 
 def process_audio_file(file_path: str) -> bool:
+
     return transcription_worker.process_audio_file(file_path)
