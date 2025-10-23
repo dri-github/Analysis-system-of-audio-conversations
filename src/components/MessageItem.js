@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ListItem, Box, Typography } from '@mui/material';
 import { getSpeakerStyle, getClassColor, getClassLabel, getEmotionLabel } from './utils';
 import { styles } from './styles';
 
-const MessageItem = ({ fragment }) => {
+const MessageItem = ({ fragment, onSeekAudio }) => {
   const style = getSpeakerStyle(fragment.speaker);
   const bgColor = getClassColor(fragment);
+
+  const handleClick = () => {
+    if (onSeekAudio && fragment.start && fragment.stop) {
+      onSeekAudio(fragment.start, fragment.stop); // Передаем start и stop
+    }
+  };
 
   return (
     <ListItem
@@ -15,8 +21,9 @@ const MessageItem = ({ fragment }) => {
         mb: 2,
         width: '80%',
         justifyContent: 'stretch',
-        
+        cursor: 'pointer',
       }}
+      onClick={handleClick}
     >
       <Box
         sx={{
@@ -38,19 +45,16 @@ const MessageItem = ({ fragment }) => {
           {fragment.text}
         </Typography>
         
-        {/* Класс как отдельная строка, как на скрине */}
         <Typography variant="body2" fontWeight="medium" gutterBottom color='white' sx={{ fontSize: '1em' }}>
           {getClassLabel(fragment)} | {getEmotionLabel(fragment)}
         </Typography>
         
-        {/* Время как отдельная строка, без duration для краткости */}
         <Typography variant="body2" gutterBottom color='white' sx={{ fontSize: '1em' }}>
           {fragment.start} - {fragment.stop}
         </Typography>
         
-        {/* Нижняя строка с метриками */}
         <Typography variant="caption" color='white' sx={{ fontSize: '1rem', opacity: 0.9 }}>
-          Спикер {fragment.speaker} | Уверенность: {fragment.classConfidence?.toFixed(2) || '1.00'}
+          Спикер {fragment.speaker} 
         </Typography>
       </Box>
     </ListItem>

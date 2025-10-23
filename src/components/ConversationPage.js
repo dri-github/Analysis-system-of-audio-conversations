@@ -1,19 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Tabs, Tab, Typography, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { styles } from './styles';
 import TabPanel from './TabPanel';
 import StatsPanel from './StatsPanel';
 import MessageList from './MessageList';
 import { getClassLabel } from './utils';
+import AudioPlayer from './AudioPlayer';
 
 const ConversationPage = () => {
   const [conversations, setConversations] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedConversation, setSelectedConversation] = useState(null);
+  const [stats, setStats] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClass, setSelectedClass] = useState('Все');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [audioSrc, setAudioSrc] = useState('');
+  const [audioError, setAudioError] = useState(null);
+  const [currentSeek, setCurrentSeek] = useState({ start: null, stop: null });
+  const [isPlaying, setIsPlaying] = useState(false);
+  const blobUrlRef = useRef(null);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -23,11 +30,10 @@ const ConversationPage = () => {
         if (!response.ok) throw new Error('Ошибка при загрузке списка разговоров');
         const conversationsData = await response.json();
         
-        // Теперь сервер возвращает массив объектов с полями id, file_name, file_path, date_time
         setConversations(conversationsData);
         
         if (conversationsData.length > 0) {
-          await fetchConversation(conversationsData[0].id);
+          await fetchConversationAndStats(conversationsData[0].id);
           setSelectedTab(0);
         }
       } catch (err) {
@@ -39,20 +45,62 @@ const ConversationPage = () => {
     fetchInitialData();
   }, []);
 
-  const fetchConversation = async (conversationId) => {
+  const fetchConversationAndStats = async (conversationId) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3001/api/conversations/${conversationId}`);
-      if (!response.ok) throw new Error('Ошибка при загрузке разговора');
-      const data = await response.json();
-      
-      // Теперь сервер возвращает объект с полями:
-      // id, file_data, file_name, file_path, date_time
-      setSelectedConversation(data);
+      setAudioError(null);
+      const [conversationResponse, statsResponse] = await Promise.all([
+        fetch(`http://localhost:3001/api/conversations/${conversationId}`),
+        fetch(`http://localhost:3001/api/conversations/${conversationId}/stats`)
+      ]);
+
+      if (!conversationResponse.ok) throw new Error('Ошибка при загрузке разговора');
+      const conversationData = await conversationResponse.json();
+      setSelectedConversation(conversationData);
+
+      const baseName = conversationData.file_name.replace(/\.[^/.]+$/, '');
+      await fetchAudio(baseName);
+
+      if (!statsResponse.ok) {
+        console.warn('Ошибка при загрузке статистики, используется fallback');
+        setStats(null);
+      } else {
+        const statsData = await statsResponse.json();
+        setStats(statsData);
+      }
     } catch (err) {
       setError(err.message);
+      setSelectedConversation({ file_data: { splitted: [] } });
+      setStats(null);
+      setAudioSrc('');
+      setAudioError('Ошибка загрузки разговора');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAudio = async (baseName, signal) => {
+    try {
+      setAudioError(null);
+      const response = await fetch(`http://localhost:3001/api/audio/${baseName}.mp3`, { signal });
+      if (!response.ok) {
+        throw new Error('Аудио файл не найден на сервере');
+      }
+      const blob = await response.blob();
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+      }
+      const url = URL.createObjectURL(blob);
+      blobUrlRef.current = url;
+      setAudioSrc(url);
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        console.log('Fetch aborted');
+        return;
+      }
+      console.error(err);
+      setAudioSrc('');
+      setAudioError(err.message || 'Не удалось загрузить аудио файл');
     }
   };
 
@@ -61,14 +109,12 @@ const ConversationPage = () => {
     setSearchTerm('');
     setSelectedClass('Все');
     if (conversations[newValue]) {
-      fetchConversation(conversations[newValue].id);
+      fetchConversationAndStats(conversations[newValue].id);
     }
   };
 
-  // Получаем fragments из file_data (основные данные разговора)
   const fragments = selectedConversation?.file_data?.splitted || [];
 
-  // Форматирование даты для отображения
   const formatDate = (dateString) => {
     if (!dateString) return 'Нет даты';
     try {
@@ -85,14 +131,49 @@ const ConversationPage = () => {
     }
   };
 
-  // Извлечение уникальных классов для dropdown
   const uniqueClasses = Array.from(
     new Set(
-      fragments && Array.isArray(fragments) 
+      fragments && Array.isArray(fragments)
         ? fragments.map(fragment => getClassLabel(fragment).split(' (')[0] || 'N/A')
         : []
     )
   );
+
+  const handleSeekAudio = (startStr, stopStr) => {
+    console.log('handleSeekAudio: startStr =', startStr, 'stopStr =', stopStr); // Для отладки
+    if (!startStr || !stopStr) {
+      console.warn('handleSeekAudio: Invalid start or stop time');
+      setCurrentSeek({ start: null, stop: null });
+      return;
+    }
+    const startInSeconds = timeStrToSeconds(startStr);
+    const stopInSeconds = timeStrToSeconds(stopStr);
+    if (isNaN(startInSeconds) || isNaN(stopInSeconds)) {
+      console.warn('handleSeekAudio: Invalid time conversion');
+      setCurrentSeek({ start: null, stop: null });
+      return;
+    }
+    setCurrentSeek({ start: startInSeconds, stop: stopInSeconds });
+    setIsPlaying(true);
+  };
+
+  const timeStrToSeconds = (timeStr) => {
+    if (!timeStr) return 0;
+    const parts = timeStr.split(':');
+    const hours = parseInt(parts[0], 10) || 0;
+    const minutes = parseInt(parts[1], 10) || 0;
+    const seconds = parseFloat(parts[2] || 0);
+    return hours * 3600 + minutes * 60 + seconds;
+  };
+
+  useEffect(() => {
+    return () => {
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+        blobUrlRef.current = null;
+      }
+    };
+  }, []);
 
   if (loading) return <Typography>Загрузка...</Typography>;
   if (error) return <Typography color="error">Ошибка: {error}</Typography>;
@@ -105,12 +186,12 @@ const ConversationPage = () => {
         left: 0,
         width: '100vw',
         height: '100vh',
-        background:'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         zIndex: -1,
-        overflowY: 'auto', // Добавляем скролл для viewport (страницы)
+        overflowY: 'auto',
       }}
     >
-      <Box sx={{ ...styles.container, height: 'auto', minHeight: '100vh', overflowY: 'auto' }}> {/* Переопределяем height на minHeight для роста и скролла */}
+      <Box sx={{ ...styles.container, height: 'auto', minHeight: '100vh', overflowY: 'auto' }}>
         <Box sx={styles.analysisHeader}>
           <Typography variant="h5" color="white" fontSize={40}>
             Анализ разговора
@@ -123,8 +204,8 @@ const ConversationPage = () => {
           )}
         </Box>
 
-        <Box sx={{ ...styles.mainContent, overflow: 'hidden' }}> {/* Убираем overflow: 'auto' из mainContent */}
-          <Box sx={{ ...styles.leftPanel, overflowY: 'auto' }}> {/* Добавляем скролл для левой панели */}
+        <Box sx={{ ...styles.mainContent, overflow: 'hidden' }}>
+          <Box sx={{ ...styles.leftPanel, overflowY: 'auto' }}>
             <Tabs
               orientation="vertical"
               variant="scrollable"
@@ -144,7 +225,7 @@ const ConversationPage = () => {
               ))}
             </Tabs>
           </Box>
-          <Box sx={{ ...styles.rightPanel, minHeight: 0, height: '100%' }}> {/* Добавляем height: '100%' для rightPanel */}
+          <Box sx={{ ...styles.rightPanel, minHeight: 0, height: '100%' }}>
             {conversations.map((conv, index) => (
               <TabPanel 
                 key={conv.id} 
@@ -155,18 +236,36 @@ const ConversationPage = () => {
                   display: 'flex', 
                   flexDirection: 'column', 
                   width: '100%',
-                  height: '100%' // Добавляем height: '100%' для TabPanel
+                  height: '100%'
                 }} 
               >
-                {/* Фиксированная секция со статистикой и фильтрами */}
                 <Box sx={styles.fixedSection}>
-                  {/* Передаем file_data в StatsPanel как основной объект разговора */}
-                  <StatsPanel 
-                    conversation={selectedConversation?.file_data} 
-                    fragments={fragments} 
-                  />
+                  <StatsPanel stats={stats} />
                   
-                  {/* Фильтры из MessageList */}
+                  {selectedConversation && (
+                    <Box sx={{ mt: 2, p: 2, backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 2 }}>
+                      <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                        Аудио файл: {selectedConversation.file_name.replace(/\.[^/.]+$/, '')}.mp3
+                      </Typography>
+                      
+                      {audioError ? (
+                        <Typography color="error" sx={{ mb: 1 }}>
+                          {audioError}
+                        </Typography>
+                      ) : (
+                        <AudioPlayer 
+                          audioSrc={audioSrc}
+                          currentSeek={currentSeek}
+                          setCurrentSeek={setCurrentSeek}
+                          setIsPlaying={setIsPlaying}
+                          isPlaying={isPlaying}
+                          fragments={fragments}
+                          stats={stats}
+                        />
+                      )}
+                    </Box>
+                  )}
+                  
                   <Box sx={styles.filterControls}>
                     <TextField
                       fullWidth
@@ -193,12 +292,12 @@ const ConversationPage = () => {
                   </Box>
                 </Box>
 
-                {/* Прокручиваемая секция с сообщениями */}
-                <Box sx={{ ...styles.scrollableSection, height: '100%' }}> {/* Добавляем height: '100%' для scrollableSection */}
+                <Box sx={{ ...styles.scrollableSection, height: '100%' }}>
                   <MessageList
                     fragments={fragments}
                     searchTerm={searchTerm}
                     selectedClass={selectedClass}
+                    onSeekAudio={handleSeekAudio}
                   />
                 </Box>
               </TabPanel>

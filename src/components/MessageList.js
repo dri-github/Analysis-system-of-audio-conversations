@@ -4,7 +4,7 @@ import { styles } from './styles';
 import { getClassLabel } from './utils';
 import MessageItem from './MessageItem';
 
-const MessageList = ({ fragments, searchTerm, selectedClass }) => {
+const MessageList = ({ fragments, searchTerm, selectedClass, onSeekAudio }) => {
   // Фильтрация фрагментов
   const filteredFragments = (fragments && Array.isArray(fragments) ? fragments : []).filter(fragment => {
     const matchesSearch = fragment.text.toLowerCase().includes(searchTerm.toLowerCase());
@@ -16,9 +16,9 @@ const MessageList = ({ fragments, searchTerm, selectedClass }) => {
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '1000px' }}>
       {filteredFragments.length > 0 ? (
-        <List sx={{ ...styles.messageList, flex: 1, overflowY: 'scroll' }}> {/* Изменено на 'scroll' для принудительной прокрутки */}
+        <List sx={{ ...styles.messageList, flex: 1, overflowY: 'scroll' }}>
           {filteredFragments.map((fragment, fragIndex) => (
-            <MessageItem key={fragIndex} fragment={fragment} />
+            <MessageItem key={fragIndex} fragment={fragment} onSeekAudio={onSeekAudio} />
           ))}
         </List>
       ) : (

@@ -1,3 +1,4 @@
+
 export const styles = {
   container: {
     display: 'flex',
@@ -6,37 +7,66 @@ export const styles = {
     maxWidth: '1400px',
     margin: '0 auto',
     marginTop: '10px',
-    minHeight: '100vh', // minHeight вместо height, чтобы мог расти
+    minHeight: '100vh',
     backgroundColor: '#f5f5f5',
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    overflowY: 'auto', // Скролл для всей страницы, если контент больше экрана
-  },
-  mainContent: {
-    display: 'flex',
-    flex: 1,
-    minHeight: 0, // Важно для flex в overflow-контейнере
+    overflowY: 'auto',
+    boxSizing: 'border-box',
+    '@media (max-width: 600px)': {
+      width: '100%',
+      marginTop: 0,
+      borderRadius: 0,
+    },
   },
   analysisHeader: {
     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     padding: 2,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    borderBottomRightRadius: 0,
-    borderBottomLeftRadius: 0,
     marginBottom: 2,
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    textAlign: 'center',
+    flexShrink: 0,
     '& h5': {
       marginBottom: 0.5,
+      fontSize: '2rem',
+      color: '#fff',
     },
-    flexShrink: 0,
+    '& .MuiTypography-subtitle1': {
+      fontSize: '1rem',
+      color: '#fff',
+    },
+    '@media (max-width: 600px)': {
+      padding: 1,
+      '& h5': {
+        fontSize: '1.5rem',
+      },
+      '& .MuiTypography-subtitle1': {
+        fontSize: '0.9rem',
+      },
+    },
+  },
+  mainContent: {
+    display: 'flex',
+    flex: 1,
+    minHeight: 0,
+    '@media (max-width: 600px)': {
+      flexDirection: 'column',
+    },
   },
   leftPanel: {
     width: '25%',
+    minWidth: '200px',
     borderRight: '1px solid #e0e0e0',
     backgroundColor: '#fff',
-    overflowY: 'auto', // Скролл для вкладок, если много
+    overflowY: 'auto',
     flexShrink: 0,
+    '@media (max-width: 600px)': {
+      width: '100%',
+      minWidth: 'auto',
+      maxHeight: '30vh',
+    },
   },
   rightPanel: {
     flex: 1,
@@ -46,119 +76,217 @@ export const styles = {
     px: 2,
     boxShadow: 'inset -2px 0 8px rgba(0,0,0,0.05)',
     boxSizing: 'border-box',
-    minHeight: 0, // Важно для flex
+    minHeight: 0,
+    maxWidth: '100%', // Ограничиваем ширину для предотвращения выхода за экран
+    overflowX: 'hidden', // Предотвращаем горизонтальный скролл на уровне панели
+    '@media (max-width: 600px)': {
+      py: 2,
+      px: 1,
+      overflowX: 'hidden',
+    },
   },
   fixedSection: {
     flexShrink: 0,
     backgroundColor: '#f5f5f5',
     padding: 2,
     borderBottom: '1px solid #e0e0e0',
+    maxWidth: '100%', // Ограничиваем ширину fixedSection
+    '@media (max-width: 600px)': {
+      padding: 1,
+    },
+  },
+  scrollableSection: {
+    flex: 1,
+    display: 'flex',
+    overflow: 'hidden',
+    '@media (max-width: 600px)': {
+      overflowY: 'auto',
+    },
   },
   filterControls: {
     display: 'flex',
     gap: 2,
     alignItems: 'center',
     marginTop: 2,
+    maxWidth: '100%', // Предотвращаем выход за пределы
+    flexWrap: 'wrap', // Переносим элементы на следующую строку
+    '@media (max-width: 600px)': {
+      flexDirection: 'column',
+      gap: 1,
+      marginTop: 1,
+    },
   },
   tabs: {
     borderRight: 1,
     borderColor: 'divider',
     '& .MuiTab-root': {
       alignItems: 'flex-start',
+      fontSize: '1.5rem',
+      textTransform: 'none',
+      justifyContent: 'flex-start',
+      minWidth: 'auto',
+      color: '#333',
+      '&.Mui-selected': {
+        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+        color: '#667eea',
+      },
+    },
+    '@media (max-width: 600px)': {
+      '& .MuiTab-root': {
+        fontSize: '1.2rem',
+      },
     },
   },
-  tab: {
-    textTransform: 'none',
-    justifyContent: 'flex-start',
-    minWidth: 'auto',
-    fontSize: '1.3rem',
-  },
   statsPanel: {
-    p: 2,
-    mb: 2,
-    borderRadius: 2,
-    boxShadow: 1,
+    padding: 3,
+    marginBottom: 3,
+    borderRadius: 4,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
     backgroundColor: '#fff',
-  },
-
-  messageList: {
-    bgcolor: 'background.paper',
+    overflowY: 'auto',
+    overflowX: 'auto',
+    maxHeight: '80vh',
     width: '100%',
-    flex: 1, // Заполняет доступное пространство
-    overflowY: 'auto', // Независимый скролл списка
-    maxHeight: 'none', // Убираем ограничение, если было
+    maxWidth: '100%', // Ограничиваем ширину
+    boxSizing: 'border-box',
+    '@media (max-width: 600px)': {
+      padding: 2,
+      maxHeight: '70vh',
+      fontSize: '0.9rem',
+    },
   },
-  scrollableSection: { // Используй этот стиль для Box вокруг MessageList в ConversationPage
-    flex: 1,
-    display: 'flex',
-    overflow: 'hidden', // Скрываем скролл здесь, передаем в List
-  },
-  progressContainer: {
-    display: 'flex',
+  statsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
     gap: 2,
-    mb: 2,
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
+    marginBottom: 3,
+    padding: 2,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 4,
+    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.05)',
+    maxWidth: '100%', // Ограничиваем ширину
+    '& > *': {
+      fontSize: '1.1rem',
+      '& strong': {
+        color: '#333',
+        marginRight: 1,
+      },
+    },
+    '@media (max-width: 600px)': {
+      gridTemplateColumns: '1fr',
+      fontSize: '1rem',
+    },
+  },
+  chartContainer: {
+    marginBottom: 4,
+    padding: 2,
+    borderRadius: 4,
+    backgroundColor: '#f9f9f9',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+    maxWidth: '100%', // Ограничиваем ширину
+    '@media (max-width: 600px)': {
+      padding: 1,
+      marginBottom: 2,
+    },
+  },
+  chartTitle: {
+    fontSize: '1.4rem',
+    fontWeight: 600,
+    marginBottom: 1,
+    color: '#444',
+    '@media (max-width: 600px)': {
+      fontSize: '1.2rem',
+    },
+  },
+  barChart: {
+    maxWidth: '100%', // Ограничиваем ширину чартов
+    '& .MuiChartsAxis-label': {
+      fontSize: '0.9rem',
+    },
+    '& .MuiChartsLegend-series text': {
+      fontSize: '1rem',
+    },
+    '@media (max-width: 600px)': {
+      '& .MuiChartsAxis-label': {
+        fontSize: '0.8rem',
+      },
+      '& .MuiChartsLegend-series text': {
+        fontSize: '0.9rem',
+      },
+    },
   },
   progressItem: {
     flex: 1,
-    minWidth: 150,
-    textAlign: 'center',
+    minWidth: 200,
+    textAlign: 'left',
     transition: 'all 0.3s ease',
+    maxWidth: '100%', // Ограничиваем ширину
     '&:hover': {
-      transform: 'scale(1.02)',
+      transform: 'translateY(-2px)',
       boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    },
+    '@media (max-width: 600px)': {
+      minWidth: 150,
     },
   },
   progressBar: {
-    height: 30,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#e0e0e0',
+    maxWidth: '100%', // Ограничиваем ширину
     '& .MuiLinearProgress-bar': {
-      borderRadius: 8,
-      transition: 'transform 0.6s ease-out',
+      borderRadius: 6,
+      transition: 'width 0.5s ease-in-out',
     },
-    operatorBar: {
-      background: 'linear-gradient(90deg, #199f1dff 0%, #13e11eff 100%)',
-    },
-    clientBar: {
-      background: 'linear-gradient(90deg, #276ba2ff 0%, #64b5f6 100%)',
+    '@media (max-width: 600px)': {
+      height: 10,
     },
   },
   statText: {
-    fontSize: '1.7rem',
+    fontSize: '1.2rem',
     fontWeight: 500,
-    lineHeight: 1.2,
-    marginTop: 0.5,
     marginBottom: 0.5,
+    color: '#555',
+    '@media (max-width: 600px)': {
+      fontSize: '1rem',
+    },
   },
   statText2: {
-    fontSize: '2rem',
+    fontSize: '1.5rem',
     fontWeight: 600,
-    lineHeight: 1.2,
-    marginTop: 1,
+    marginTop: 0.5,
+    color: '#ff9800',
+    '@media (max-width: 600px)': {
+      fontSize: '1.3rem',
+    },
   },
-  statsGrid: { // Для избежания дубликата
-   display: 'flex',
-    gap: 2,
-    mb: 2,
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    padding: 1,
-    backgroundColor: '#ffffff',
-    borderRadius: 4,
-    boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-    '& > *': {
-      
-      
-      alignItems: 'center',
-      paddingLeft: '3rem',
-      paddingRight: '3rem',
-      fontSize: '1.7rem',
-      '& strong': {
-        color: '#000000ff',
-        marginRight: 1,
+  table: {
+    maxWidth: '100%', // Ограничиваем ширину таблицы
+    '& .MuiTableCell-head': {
+      fontWeight: 600,
+      backgroundColor: '#f5f5f5',
+      color: '#333',
+    },
+    '& .MuiTableCell-body': {
+      fontSize: '0.9rem',
+    },
+    '@media (max-width: 600px)': {
+      '& .MuiTableCell-head': {
+        fontSize: '0.8rem',
       },
+      '& .MuiTableCell-body': {
+        fontSize: '0.8rem',
+      },
+    },
+  },
+  messageList: {
+    backgroundColor: '#fff',
+    width: '100%',
+    flex: 1,
+    overflowY: 'auto',
+    maxWidth: '100%', // Ограничиваем ширину
+    '@media (max-width: 600px)': {
+      maxHeight: '50vh',
     },
   },
 };

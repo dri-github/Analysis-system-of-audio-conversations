@@ -1,5 +1,4783 @@
 [
   {
+  "model": "big",
+  "speakers": [
+    {
+      "id": 0,
+      "duration": 143910,
+      "fragments": 10,
+      "age": "old",
+      "gender": "female"
+    },
+    {
+      "id": 1,
+      "duration": 130610,
+      "fragments": 8,
+      "age": "adult",
+      "gender": "male"
+    },
+    {
+      "id": 2,
+      "duration": 22640,
+      "fragments": 1,
+      "age": "adult",
+      "gender": "female"
+    }
+  ],
+  "splitted": [
+    {
+      "start": "00:00:09.50",
+      "text": "Патология.",
+      "words": [
+        {
+          "word": "Патология.",
+          "start": 9050,
+          "stop": 9670,
+          "confidence": 0.750701904296875
+        }
+      ],
+      "stop": "00:00:09.670",
+      "channel": 1,
+      "duration": "00:00:00.620",
+      "start_ms": 9050,
+      "stop_ms": 9670,
+      "duration_ms": 620,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": 0.056
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "13-19",
+          "confidence": 0.8222634792327881
+        },
+        "emotion": {
+          "class": "NEUTRAL",
+          "confidence": 0.9999998807907104
+        },
+        "gender": {
+          "class": "MALE",
+          "confidence": 0.9999980926513672
+        }
+      }
+    },
+    {
+      "start": "00:00:09.870",
+      "text": "Алло, добрый день, Елена Александровна.",
+      "words": [
+        {
+          "word": "Алло,",
+          "start": 9870,
+          "stop": 10450,
+          "confidence": 0.8896484375
+        },
+        {
+          "word": "добрый",
+          "start": 10530,
+          "stop": 10710,
+          "confidence": 0.980224609375
+        },
+        {
+          "word": "день,",
+          "start": 10710,
+          "stop": 10830,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "Елена",
+          "start": 10950,
+          "stop": 11210,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "Александровна.",
+          "start": 11210,
+          "stop": 12110,
+          "confidence": 0.9983723958333334
+        }
+      ],
+      "stop": "00:00:12.110",
+      "channel": 0,
+      "duration": "00:00:02.240",
+      "start_ms": 9870,
+      "stop_ms": 12110,
+      "duration_ms": 2240,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.85
+      },
+      "emotion": {
+        "neutral": -0.0762
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.9988985061645508
+        }
+      }
+    },
+    {
+      "start": "00:00:10.430",
+      "text": "Добрый день. Да, да.",
+      "words": [
+        {
+          "word": "Добрый",
+          "start": 10430,
+          "stop": 10910,
+          "confidence": 0.9933268229166666
+        },
+        {
+          "word": "день.",
+          "start": 10910,
+          "stop": 11070,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "Да,",
+          "start": 12470,
+          "stop": 12590,
+          "confidence": 0.98681640625
+        },
+        {
+          "word": "да.",
+          "start": 12750,
+          "stop": 12910,
+          "confidence": 0.99951171875
+        }
+      ],
+      "stop": "00:00:12.910",
+      "channel": 1,
+      "duration": "00:00:02.480",
+      "start_ms": 10430,
+      "stop_ms": 12910,
+      "duration_ms": 2480,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "neutral": -0.0982
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "20-29",
+          "confidence": 0.991884708404541
+        },
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.9954215884208679
+        },
+        "gender": {
+          "class": "MALE",
+          "confidence": 0.736994743347168
+        }
+      }
+    },
+    {
+      "start": "00:00:13.30",
+      "text": "Да, здравствуйте. А подскажите, мы вот с Аксатой по поводу колл-центра хотим уточнить. Вот то, что у вас есть колл-центр его хватает? Ну, у нас просто расширенные системы. Вот, Беларусьбанк Белжеден на нашей системе работает Белвебстрахование. Сейчас РНПЦ подключаем. Вот, хотим узнать, как у вас тут.",
+      "words": [
+        {
+          "word": "Да,",
+          "start": 13030,
+          "stop": 13550,
+          "confidence": 0.87109375
+        },
+        {
+          "word": "здравствуйте.",
+          "start": 13730,
+          "stop": 14090,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "А",
+          "start": 14350,
+          "stop": 14430,
+          "confidence": 0.62109375
+        },
+        {
+          "word": "подскажите,",
+          "start": 14430,
+          "stop": 15030,
+          "confidence": 0.9903564453125
+        },
+        {
+          "word": "мы",
+          "start": 15170,
+          "stop": 15230,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "вот",
+          "start": 15230,
+          "stop": 15450,
+          "confidence": 0.95458984375
+        },
+        {
+          "word": "с",
+          "start": 15450,
+          "stop": 15570,
+          "confidence": 0.53271484375
+        },
+        {
+          "word": "Аксатой",
+          "start": 15570,
+          "stop": 16030,
+          "confidence": 0.728662109375
+        },
+        {
+          "word": "по",
+          "start": 16030,
+          "stop": 16450,
+          "confidence": 0.9111328125
+        },
+        {
+          "word": "поводу",
+          "start": 16450,
+          "stop": 16810,
+          "confidence": 0.999755859375
+        },
+        {
+          "word": "колл-центра",
+          "start": 16810,
+          "stop": 17090,
+          "confidence": 0.9901123046875
+        },
+        {
+          "word": "хотим",
+          "start": 17390,
+          "stop": 17710,
+          "confidence": 0.998779296875
+        },
+        {
+          "word": "уточнить.",
+          "start": 17710,
+          "stop": 18190,
+          "confidence": 1
+        },
+        {
+          "word": "Вот",
+          "start": 18310,
+          "stop": 18450,
+          "confidence": 0.95166015625
+        },
+        {
+          "word": "то,",
+          "start": 18450,
+          "stop": 19030,
+          "confidence": 0.99658203125
+        },
+        {
+          "word": "что",
+          "start": 19050,
+          "stop": 19190,
+          "confidence": 1
+        },
+        {
+          "word": "у",
+          "start": 19190,
+          "stop": 19350,
+          "confidence": 1
+        },
+        {
+          "word": "вас",
+          "start": 19350,
+          "stop": 19570,
+          "confidence": 0.962890625
+        },
+        {
+          "word": "есть",
+          "start": 19570,
+          "stop": 19850,
+          "confidence": 1
+        },
+        {
+          "word": "колл-центр",
+          "start": 19850,
+          "stop": 20130,
+          "confidence": 0.87225341796875
+        },
+        {
+          "word": "его",
+          "start": 20550,
+          "stop": 20650,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "хватает?",
+          "start": 20650,
+          "stop": 21410,
+          "confidence": 1
+        },
+        {
+          "word": "Ну,",
+          "start": 21870,
+          "stop": 22010,
+          "confidence": 0.8544921875
+        },
+        {
+          "word": "у",
+          "start": 22070,
+          "stop": 22250,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "нас",
+          "start": 22250,
+          "stop": 22390,
+          "confidence": 1
+        },
+        {
+          "word": "просто",
+          "start": 22390,
+          "stop": 22690,
+          "confidence": 1
+        },
+        {
+          "word": "расширенные",
+          "start": 22690,
+          "stop": 23410,
+          "confidence": 0.997314453125
+        },
+        {
+          "word": "системы.",
+          "start": 23410,
+          "stop": 24050,
+          "confidence": 1
+        },
+        {
+          "word": "Вот,",
+          "start": 24290,
+          "stop": 24410,
+          "confidence": 0.9970703125
+        },
+        {
+          "word": "Беларусьбанк",
+          "start": 24410,
+          "stop": 25150,
+          "confidence": 0.98095703125
+        },
+        {
+          "word": "Белжеден",
+          "start": 25210,
+          "stop": 25730,
+          "confidence": 0.771826171875
+        },
+        {
+          "word": "на",
+          "start": 25730,
+          "stop": 25930,
+          "confidence": 0.89794921875
+        },
+        {
+          "word": "нашей",
+          "start": 25930,
+          "stop": 26170,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "системе",
+          "start": 26170,
+          "stop": 26630,
+          "confidence": 1
+        },
+        {
+          "word": "работает",
+          "start": 26630,
+          "stop": 27010,
+          "confidence": 0.71044921875
+        },
+        {
+          "word": "Белвебстрахование.",
+          "start": 27090,
+          "stop": 27990,
+          "confidence": 0.7887137276785714
+        },
+        {
+          "word": "Сейчас",
+          "start": 28590,
+          "stop": 28770,
+          "confidence": 0.7197265625
+        },
+        {
+          "word": "РНПЦ",
+          "start": 28770,
+          "stop": 29230,
+          "confidence": 0.9509765625
+        },
+        {
+          "word": "подключаем.",
+          "start": 29230,
+          "stop": 29810,
+          "confidence": 0.9993489583333334
+        },
+        {
+          "word": "Вот,",
+          "start": 29890,
+          "stop": 29950,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "хотим",
+          "start": 29950,
+          "stop": 30250,
+          "confidence": 0.997314453125
+        },
+        {
+          "word": "узнать,",
+          "start": 30250,
+          "stop": 30550,
+          "confidence": 0.999267578125
+        },
+        {
+          "word": "как",
+          "start": 30590,
+          "stop": 30750,
+          "confidence": 0.998046875
+        },
+        {
+          "word": "у",
+          "start": 30750,
+          "stop": 30830,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "вас",
+          "start": 30830,
+          "stop": 31030,
+          "confidence": 1
+        },
+        {
+          "word": "тут.",
+          "start": 31030,
+          "stop": 31230,
+          "confidence": 0.99951171875
+        }
+      ],
+      "stop": "00:00:31.230",
+      "channel": 0,
+      "duration": "00:00:18.200",
+      "start_ms": 13030,
+      "stop_ms": 31230,
+      "duration_ms": 18200,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.18
+      },
+      "emotion": {
+        "positive": 0.9621
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.6393770575523376
+        }
+      }
+    },
+    {
+      "start": "00:00:31.970",
+      "text": "Честно говоря, не знаю. Я не могу так. У нас как такового колл-центра нет. Что вы имеете в виду под колл-центром",
+      "words": [
+        {
+          "word": "Честно",
+          "start": 31970,
+          "stop": 32530,
+          "confidence": 0.790771484375
+        },
+        {
+          "word": "говоря,",
+          "start": 32530,
+          "stop": 32890,
+          "confidence": 1
+        },
+        {
+          "word": "не",
+          "start": 33450,
+          "stop": 33570,
+          "confidence": 0.751953125
+        },
+        {
+          "word": "знаю.",
+          "start": 33570,
+          "stop": 33870,
+          "confidence": 1
+        },
+        {
+          "word": "Я",
+          "start": 34050,
+          "stop": 34110,
+          "confidence": 0.97119140625
+        },
+        {
+          "word": "не",
+          "start": 34110,
+          "stop": 34250,
+          "confidence": 1
+        },
+        {
+          "word": "могу",
+          "start": 34250,
+          "stop": 34410,
+          "confidence": 1
+        },
+        {
+          "word": "так.",
+          "start": 34410,
+          "stop": 34650,
+          "confidence": 0.74169921875
+        },
+        {
+          "word": "У",
+          "start": 34650,
+          "stop": 34750,
+          "confidence": 0.96484375
+        },
+        {
+          "word": "нас",
+          "start": 34750,
+          "stop": 34910,
+          "confidence": 1
+        },
+        {
+          "word": "как",
+          "start": 34910,
+          "stop": 35090,
+          "confidence": 0.97998046875
+        },
+        {
+          "word": "такового",
+          "start": 35090,
+          "stop": 35530,
+          "confidence": 0.9646809895833334
+        },
+        {
+          "word": "колл-центра",
+          "start": 35530,
+          "stop": 35830,
+          "confidence": 0.98760986328125
+        },
+        {
+          "word": "нет.",
+          "start": 36170,
+          "stop": 36330,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "Что",
+          "start": 36470,
+          "stop": 36570,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "вы",
+          "start": 36570,
+          "stop": 36670,
+          "confidence": 0.78076171875
+        },
+        {
+          "word": "имеете",
+          "start": 36670,
+          "stop": 36990,
+          "confidence": 0.998779296875
+        },
+        {
+          "word": "в",
+          "start": 36990,
+          "stop": 37070,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "виду",
+          "start": 37070,
+          "stop": 37230,
+          "confidence": 0.908447265625
+        },
+        {
+          "word": "под",
+          "start": 37230,
+          "stop": 37370,
+          "confidence": 0.99462890625
+        },
+        {
+          "word": "колл-центром",
+          "start": 37370,
+          "stop": 37670,
+          "confidence": 0.9991455078125
+        }
+      ],
+      "stop": "00:00:37.670",
+      "channel": 1,
+      "duration": "00:00:05.700",
+      "start_ms": 31970,
+      "stop_ms": 37670,
+      "duration_ms": 5700,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "neutral": 0.2407
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "13-19",
+          "confidence": 0.701592206954956
+        },
+        "emotion": {
+          "class": "BORE",
+          "confidence": 0.9999178647994995
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.9899319410324097
+        }
+      }
+    },
+    {
+      "start": "00:00:37.90",
+      "text": "А это вот на 6887, который основной номер. Это у него там нет никакого колл-центра с переадресациями записи.",
+      "words": [
+        {
+          "word": "А",
+          "start": 37090,
+          "stop": 37590,
+          "confidence": 0.7255859375
+        },
+        {
+          "word": "это",
+          "start": 37590,
+          "stop": 37830,
+          "confidence": 0.9140625
+        },
+        {
+          "word": "вот",
+          "start": 37830,
+          "stop": 38050,
+          "confidence": 0.9013671875
+        },
+        {
+          "word": "на",
+          "start": 38050,
+          "stop": 39350,
+          "confidence": 0.9619140625
+        },
+        {
+          "word": "6887,",
+          "start": 39350,
+          "stop": 40790,
+          "confidence": 0.8359375
+        },
+        {
+          "word": "который",
+          "start": 40890,
+          "stop": 41130,
+          "confidence": 0.966796875
+        },
+        {
+          "word": "основной",
+          "start": 41130,
+          "stop": 41650,
+          "confidence": 0.996826171875
+        },
+        {
+          "word": "номер.",
+          "start": 41650,
+          "stop": 41970,
+          "confidence": 1
+        },
+        {
+          "word": "Это",
+          "start": 42090,
+          "stop": 42210,
+          "confidence": 0.66796875
+        },
+        {
+          "word": "у",
+          "start": 42210,
+          "stop": 42590,
+          "confidence": 0.9580078125
+        },
+        {
+          "word": "него",
+          "start": 42590,
+          "stop": 42770,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "там",
+          "start": 42770,
+          "stop": 42930,
+          "confidence": 0.97119140625
+        },
+        {
+          "word": "нет",
+          "start": 42930,
+          "stop": 43170,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "никакого",
+          "start": 43170,
+          "stop": 43530,
+          "confidence": 0.935302734375
+        },
+        {
+          "word": "колл-центра",
+          "start": 43530,
+          "stop": 43790,
+          "confidence": 0.9560546875
+        },
+        {
+          "word": "с",
+          "start": 44110,
+          "stop": 45130,
+          "confidence": 0.81982421875
+        },
+        {
+          "word": "переадресациями",
+          "start": 45130,
+          "stop": 46010,
+          "confidence": 0.982177734375
+        },
+        {
+          "word": "записи.",
+          "start": 46010,
+          "stop": 46630,
+          "confidence": 0.972412109375
+        }
+      ],
+      "stop": "00:00:46.630",
+      "channel": 0,
+      "duration": "00:00:09.540",
+      "start_ms": 37090,
+      "stop_ms": 46630,
+      "duration_ms": 9540,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.5637
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "BORE",
+          "confidence": 0.7288228273391724
+        }
+      }
+    },
+    {
+      "start": "00:00:44.440",
+      "text": "Нет, у нас. Ну, если считать, то есть у нас как такового нет колл-центра У нас есть регистратора медицинская, где регистратор отвечает на звонки и, не знаю, если заняты телефоны, то просят пациентов подождать.",
+      "words": [
+        {
+          "word": "Нет,",
+          "start": 44440,
+          "stop": 45080,
+          "confidence": 0.9580078125
+        },
+        {
+          "word": "у",
+          "start": 45300,
+          "stop": 45300,
+          "confidence": 0.97265625
+        },
+        {
+          "word": "нас.",
+          "start": 45300,
+          "stop": 45880,
+          "confidence": 1
+        },
+        {
+          "word": "Ну,",
+          "start": 45900,
+          "stop": 46080,
+          "confidence": 0.7841796875
+        },
+        {
+          "word": "если",
+          "start": 46260,
+          "stop": 46340,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "считать,",
+          "start": 46340,
+          "stop": 46840,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "то",
+          "start": 47020,
+          "stop": 47080,
+          "confidence": 0.90234375
+        },
+        {
+          "word": "есть",
+          "start": 47080,
+          "stop": 47160,
+          "confidence": 0.99609375
+        },
+        {
+          "word": "у",
+          "start": 47160,
+          "stop": 47240,
+          "confidence": 0.98193359375
+        },
+        {
+          "word": "нас",
+          "start": 47240,
+          "stop": 47399,
+          "confidence": 1
+        },
+        {
+          "word": "как",
+          "start": 47399,
+          "stop": 47820,
+          "confidence": 0.9814453125
+        },
+        {
+          "word": "такового",
+          "start": 47820,
+          "stop": 48320,
+          "confidence": 0.9988606770833334
+        },
+        {
+          "word": "нет",
+          "start": 48320,
+          "stop": 48540,
+          "confidence": 1
+        },
+        {
+          "word": "колл-центра",
+          "start": 48540,
+          "stop": 48860,
+          "confidence": 0.97845458984375
+        },
+        {
+          "word": "У",
+          "start": 49260,
+          "stop": 49340,
+          "confidence": 1
+        },
+        {
+          "word": "нас",
+          "start": 49340,
+          "stop": 49500,
+          "confidence": 1
+        },
+        {
+          "word": "есть",
+          "start": 49500,
+          "stop": 49700,
+          "confidence": 1
+        },
+        {
+          "word": "регистратора",
+          "start": 49700,
+          "stop": 50520,
+          "confidence": 0.9178466796875
+        },
+        {
+          "word": "медицинская,",
+          "start": 50520,
+          "stop": 51840,
+          "confidence": 0.999267578125
+        },
+        {
+          "word": "где",
+          "start": 51980,
+          "stop": 52140,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "регистратор",
+          "start": 52140,
+          "stop": 53220,
+          "confidence": 0.9154052734375
+        },
+        {
+          "word": "отвечает",
+          "start": 53220,
+          "stop": 53680,
+          "confidence": 0.998291015625
+        },
+        {
+          "word": "на",
+          "start": 53680,
+          "stop": 53800,
+          "confidence": 0.9921875
+        },
+        {
+          "word": "звонки",
+          "start": 53800,
+          "stop": 54340,
+          "confidence": 1
+        },
+        {
+          "word": "и,",
+          "start": 54340,
+          "stop": 54800,
+          "confidence": 0.52685546875
+        },
+        {
+          "word": "не",
+          "start": 55240,
+          "stop": 55440,
+          "confidence": 0.9501953125
+        },
+        {
+          "word": "знаю,",
+          "start": 55440,
+          "stop": 55680,
+          "confidence": 1
+        },
+        {
+          "word": "если",
+          "start": 55860,
+          "stop": 56080,
+          "confidence": 1
+        },
+        {
+          "word": "заняты",
+          "start": 56080,
+          "stop": 57060,
+          "confidence": 0.9109700520833334
+        },
+        {
+          "word": "телефоны,",
+          "start": 57060,
+          "stop": 57720,
+          "confidence": 0.994140625
+        },
+        {
+          "word": "то",
+          "start": 57720,
+          "stop": 57960,
+          "confidence": 0.99072265625
+        },
+        {
+          "word": "просят",
+          "start": 57960,
+          "stop": 58560,
+          "confidence": 0.9228515625
+        },
+        {
+          "word": "пациентов",
+          "start": 58560,
+          "stop": 59140,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "подождать.",
+          "start": 59140,
+          "stop": 59860,
+          "confidence": 1
+        }
+      ],
+      "stop": "00:00:59.860",
+      "channel": 1,
+      "duration": "00:00:15.420",
+      "start_ms": 44440,
+      "stop_ms": 59860,
+      "duration_ms": 15420,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "neutral": -0.795
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "20-29",
+          "confidence": 0.6144587397575378
+        },
+        "emotion": {
+          "class": "SUPRISE",
+          "confidence": 0.5311915874481201
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.9939565658569336
+        }
+      }
+    },
+    {
+      "start": "00:00:51.860",
+      "text": "Ну да.",
+      "words": [
+        {
+          "word": "Ну",
+          "start": 51860,
+          "stop": 52340,
+          "confidence": 0.6083984375
+        },
+        {
+          "word": "да.",
+          "start": 52340,
+          "stop": 52500,
+          "confidence": 0.95703125
+        }
+      ],
+      "stop": "00:00:52.500",
+      "channel": 0,
+      "duration": "00:00:00.640",
+      "start_ms": 51860,
+      "stop_ms": 52500,
+      "duration_ms": 640,
+      "speaker": 2,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.1829
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "NEUTRAL",
+          "confidence": 0.7283341884613037
+        }
+      }
+    },
+    {
+      "start": "00:01:00.60",
+      "text": "Это колл-центр Это не колл-центр То есть такого нет.",
+      "words": [
+        {
+          "word": "Это",
+          "start": 60060,
+          "stop": 60500,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "колл-центр",
+          "start": 60500,
+          "stop": 60820,
+          "confidence": 0.99969482421875
+        },
+        {
+          "word": "Это",
+          "start": 61140,
+          "stop": 61240,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "не",
+          "start": 61240,
+          "stop": 61380,
+          "confidence": 1
+        },
+        {
+          "word": "колл-центр",
+          "start": 61380,
+          "stop": 61780,
+          "confidence": 1
+        },
+        {
+          "word": "То",
+          "start": 62320,
+          "stop": 62420,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "есть",
+          "start": 62420,
+          "stop": 62640,
+          "confidence": 1
+        },
+        {
+          "word": "такого",
+          "start": 62640,
+          "stop": 64520,
+          "confidence": 0.77880859375
+        },
+        {
+          "word": "нет.",
+          "start": 69070,
+          "stop": 69850,
+          "confidence": 1
+        }
+      ],
+      "stop": "00:01:09.850",
+      "channel": 1,
+      "duration": "00:00:09.790",
+      "start_ms": 60060,
+      "stop_ms": 69850,
+      "duration_ms": 9790,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "negative": -0.6439
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "50-59",
+          "confidence": 0.4306386411190033
+        },
+        "emotion": {
+          "class": "BORE",
+          "confidence": 0.6489621996879578
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.9983410835266113
+        }
+      }
+    },
+    {
+      "start": "00:01:00.320",
+      "text": "А, Ну, я понял. Ну, это такой, ну, как мини, Потому что я, вот, смотрю, есть, по сути, номер очереди, время ожидания есть. То есть, ну, такие вот, базовые. Вот. А вообще, вот, на ваш взгляд, нужен колл-центр",
+      "words": [
+        {
+          "word": "А,",
+          "start": 60320,
+          "stop": 60600,
+          "confidence": 0.951171875
+        },
+        {
+          "word": "Ну,",
+          "start": 60700,
+          "stop": 60800,
+          "confidence": 0.939453125
+        },
+        {
+          "word": "я",
+          "start": 60800,
+          "stop": 60940,
+          "confidence": 0.97412109375
+        },
+        {
+          "word": "понял.",
+          "start": 60940,
+          "stop": 61280,
+          "confidence": 1
+        },
+        {
+          "word": "Ну,",
+          "start": 62300,
+          "stop": 62580,
+          "confidence": 0.9814453125
+        },
+        {
+          "word": "это",
+          "start": 62580,
+          "stop": 62720,
+          "confidence": 0.76953125
+        },
+        {
+          "word": "такой,",
+          "start": 62720,
+          "stop": 63000,
+          "confidence": 0.93994140625
+        },
+        {
+          "word": "ну,",
+          "start": 63180,
+          "stop": 63260,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "как",
+          "start": 63260,
+          "stop": 63420,
+          "confidence": 0.998046875
+        },
+        {
+          "word": "мини,",
+          "start": 63420,
+          "stop": 63720,
+          "confidence": 0.99365234375
+        },
+        {
+          "word": "Потому",
+          "start": 63820,
+          "stop": 64020,
+          "confidence": 1
+        },
+        {
+          "word": "что",
+          "start": 64020,
+          "stop": 64200,
+          "confidence": 1
+        },
+        {
+          "word": "я,",
+          "start": 64200,
+          "stop": 64340,
+          "confidence": 0.96728515625
+        },
+        {
+          "word": "вот,",
+          "start": 64340,
+          "stop": 64460,
+          "confidence": 0.994140625
+        },
+        {
+          "word": "смотрю,",
+          "start": 64460,
+          "stop": 64740,
+          "confidence": 0.97119140625
+        },
+        {
+          "word": "есть,",
+          "start": 64860,
+          "stop": 65040,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "по",
+          "start": 65040,
+          "stop": 65460,
+          "confidence": 0.9296875
+        },
+        {
+          "word": "сути,",
+          "start": 65460,
+          "stop": 65700,
+          "confidence": 1
+        },
+        {
+          "word": "номер",
+          "start": 65700,
+          "stop": 66400,
+          "confidence": 0.998779296875
+        },
+        {
+          "word": "очереди,",
+          "start": 66400,
+          "stop": 66900,
+          "confidence": 0.98974609375
+        },
+        {
+          "word": "время",
+          "start": 67040,
+          "stop": 67180,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "ожидания",
+          "start": 67180,
+          "stop": 67960,
+          "confidence": 1
+        },
+        {
+          "word": "есть.",
+          "start": 67960,
+          "stop": 68380,
+          "confidence": 0.98974609375
+        },
+        {
+          "word": "То",
+          "start": 68500,
+          "stop": 68560,
+          "confidence": 0.94970703125
+        },
+        {
+          "word": "есть,",
+          "start": 68560,
+          "stop": 68620,
+          "confidence": 1
+        },
+        {
+          "word": "ну,",
+          "start": 68620,
+          "stop": 68740,
+          "confidence": 0.77783203125
+        },
+        {
+          "word": "такие",
+          "start": 68740,
+          "stop": 68939,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "вот,",
+          "start": 68939,
+          "stop": 69160,
+          "confidence": 0.994140625
+        },
+        {
+          "word": "базовые.",
+          "start": 69160,
+          "stop": 69640,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "Вот.",
+          "start": 71120,
+          "stop": 71600,
+          "confidence": 0.7666015625
+        },
+        {
+          "word": "А",
+          "start": 71760,
+          "stop": 71900,
+          "confidence": 0.98388671875
+        },
+        {
+          "word": "вообще,",
+          "start": 71900,
+          "stop": 72760,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "вот,",
+          "start": 72760,
+          "stop": 72940,
+          "confidence": 0.96435546875
+        },
+        {
+          "word": "на",
+          "start": 72940,
+          "stop": 73180,
+          "confidence": 0.41845703125
+        },
+        {
+          "word": "ваш",
+          "start": 73180,
+          "stop": 73380,
+          "confidence": 0.9912109375
+        },
+        {
+          "word": "взгляд,",
+          "start": 73380,
+          "stop": 73600,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "нужен",
+          "start": 73600,
+          "stop": 73920,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "колл-центр",
+          "start": 73920,
+          "stop": 74500,
+          "confidence": 0.99957275390625
+        }
+      ],
+      "stop": "00:01:14.500",
+      "channel": 0,
+      "duration": "00:00:14.180",
+      "start_ms": 60320,
+      "stop_ms": 74500,
+      "duration_ms": 14180,
+      "speaker": 2,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.93
+      },
+      "emotion": {
+        "neutral": -0.333
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.9599833488464355
+        }
+      }
+    },
+    {
+      "start": "00:01:14.960",
+      "text": "Вы знаете, ну, не уверена, что он сейчас нужен. У нас же планируется поликлиника большая на Маяковского, 31. Он будет настроиться, да? И там он нам точно нужен. А пока у нас такая небольшая поликлиника, я не вижу необходимости. У нас два телефона, два регистратора, плюс есть мобильный телефон. В принципе, пациенты дозваниваются.",
+      "words": [
+        {
+          "word": "Вы",
+          "start": 74960,
+          "stop": 75440,
+          "confidence": 0.96240234375
+        },
+        {
+          "word": "знаете,",
+          "start": 75440,
+          "stop": 75580,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "ну,",
+          "start": 76240,
+          "stop": 76400,
+          "confidence": 0.7578125
+        },
+        {
+          "word": "не",
+          "start": 76640,
+          "stop": 76820,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "уверена,",
+          "start": 76820,
+          "stop": 77080,
+          "confidence": 0.995361328125
+        },
+        {
+          "word": "что",
+          "start": 77160,
+          "stop": 77260,
+          "confidence": 1
+        },
+        {
+          "word": "он",
+          "start": 77260,
+          "stop": 77380,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "сейчас",
+          "start": 77380,
+          "stop": 77720,
+          "confidence": 1
+        },
+        {
+          "word": "нужен.",
+          "start": 77720,
+          "stop": 78060,
+          "confidence": 1
+        },
+        {
+          "word": "У",
+          "start": 78180,
+          "stop": 78260,
+          "confidence": 0.52978515625
+        },
+        {
+          "word": "нас",
+          "start": 78260,
+          "stop": 78400,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "же",
+          "start": 78400,
+          "stop": 78480,
+          "confidence": 1
+        },
+        {
+          "word": "планируется",
+          "start": 78480,
+          "stop": 79000,
+          "confidence": 0.9998779296875
+        },
+        {
+          "word": "поликлиника",
+          "start": 79000,
+          "stop": 79560,
+          "confidence": 0.9984130859375
+        },
+        {
+          "word": "большая",
+          "start": 79560,
+          "stop": 80120,
+          "confidence": 0.998046875
+        },
+        {
+          "word": "на",
+          "start": 80220,
+          "stop": 80300,
+          "confidence": 0.984375
+        },
+        {
+          "word": "Маяковского,",
+          "start": 80300,
+          "stop": 80840,
+          "confidence": 0.9559326171875
+        },
+        {
+          "word": "31.",
+          "start": 80840,
+          "stop": 81180,
+          "confidence": 0.85888671875
+        },
+        {
+          "word": "Он",
+          "start": 81180,
+          "stop": 81780,
+          "confidence": 0.83203125
+        },
+        {
+          "word": "будет",
+          "start": 81780,
+          "stop": 82020,
+          "confidence": 0.65234375
+        },
+        {
+          "word": "настроиться,",
+          "start": 82020,
+          "stop": 83040,
+          "confidence": 0.75634765625
+        },
+        {
+          "word": "да?",
+          "start": 83260,
+          "stop": 83360,
+          "confidence": 0.95654296875
+        },
+        {
+          "word": "И",
+          "start": 83560,
+          "stop": 83820,
+          "confidence": 1
+        },
+        {
+          "word": "там",
+          "start": 83820,
+          "stop": 84380,
+          "confidence": 1
+        },
+        {
+          "word": "он",
+          "start": 84380,
+          "stop": 84560,
+          "confidence": 0.9951171875
+        },
+        {
+          "word": "нам",
+          "start": 84560,
+          "stop": 84700,
+          "confidence": 0.76416015625
+        },
+        {
+          "word": "точно",
+          "start": 84700,
+          "stop": 85000,
+          "confidence": 1
+        },
+        {
+          "word": "нужен.",
+          "start": 85000,
+          "stop": 85460,
+          "confidence": 1
+        },
+        {
+          "word": "А",
+          "start": 85600,
+          "stop": 85720,
+          "confidence": 1
+        },
+        {
+          "word": "пока",
+          "start": 85720,
+          "stop": 85960,
+          "confidence": 1
+        },
+        {
+          "word": "у",
+          "start": 85960,
+          "stop": 86120,
+          "confidence": 1
+        },
+        {
+          "word": "нас",
+          "start": 86120,
+          "stop": 86200,
+          "confidence": 1
+        },
+        {
+          "word": "такая",
+          "start": 86200,
+          "stop": 86420,
+          "confidence": 1
+        },
+        {
+          "word": "небольшая",
+          "start": 86420,
+          "stop": 86880,
+          "confidence": 1
+        },
+        {
+          "word": "поликлиника,",
+          "start": 86880,
+          "stop": 87620,
+          "confidence": 1
+        },
+        {
+          "word": "я",
+          "start": 87640,
+          "stop": 87980,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "не",
+          "start": 87980,
+          "stop": 88140,
+          "confidence": 1
+        },
+        {
+          "word": "вижу",
+          "start": 88140,
+          "stop": 88500,
+          "confidence": 1
+        },
+        {
+          "word": "необходимости.",
+          "start": 88500,
+          "stop": 89600,
+          "confidence": 0.991943359375
+        },
+        {
+          "word": "У",
+          "start": 89740,
+          "stop": 89740,
+          "confidence": 0.99609375
+        },
+        {
+          "word": "нас",
+          "start": 89740,
+          "stop": 89920,
+          "confidence": 1
+        },
+        {
+          "word": "два",
+          "start": 89920,
+          "stop": 90480,
+          "confidence": 0.95263671875
+        },
+        {
+          "word": "телефона,",
+          "start": 90480,
+          "stop": 91020,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "два",
+          "start": 91120,
+          "stop": 91220,
+          "confidence": 1
+        },
+        {
+          "word": "регистратора,",
+          "start": 91220,
+          "stop": 91960,
+          "confidence": 1
+        },
+        {
+          "word": "плюс",
+          "start": 91980,
+          "stop": 92360,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "есть",
+          "start": 92360,
+          "stop": 93260,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "мобильный",
+          "start": 93260,
+          "stop": 93900,
+          "confidence": 1
+        },
+        {
+          "word": "телефон.",
+          "start": 93900,
+          "stop": 94620,
+          "confidence": 1
+        },
+        {
+          "word": "В",
+          "start": 94920,
+          "stop": 95060,
+          "confidence": 0.99658203125
+        },
+        {
+          "word": "принципе,",
+          "start": 95060,
+          "stop": 95220,
+          "confidence": 1
+        },
+        {
+          "word": "пациенты",
+          "start": 95440,
+          "stop": 95760,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "дозваниваются.",
+          "start": 95760,
+          "stop": 96660,
+          "confidence": 0.99716796875
+        }
+      ],
+      "stop": "00:01:36.660",
+      "channel": 1,
+      "duration": "00:00:21.700",
+      "start_ms": 74960,
+      "stop_ms": 96660,
+      "duration_ms": 21700,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.96
+      },
+      "emotion": {
+        "neutral": -0.2249
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "20-29",
+          "confidence": 0.9787458777427673
+        },
+        "emotion": {
+          "class": "BORE",
+          "confidence": 0.727745771408081
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.998150646686554
+        }
+      }
+    },
+    {
+      "start": "00:01:36.770",
+      "text": "Ну, это же, Вот, я правильно понимаю? 10-я городская стоматологическая, правильно? поликлиника?",
+      "words": [
+        {
+          "word": "Ну,",
+          "start": 96770,
+          "stop": 97250,
+          "confidence": 0.1617431640625
+        },
+        {
+          "word": "это",
+          "start": 97250,
+          "stop": 97350,
+          "confidence": 0.3642578125
+        },
+        {
+          "word": "же,",
+          "start": 97350,
+          "stop": 97470,
+          "confidence": 0.99609375
+        },
+        {
+          "word": "Вот,",
+          "start": 97470,
+          "stop": 97610,
+          "confidence": 0.286376953125
+        },
+        {
+          "word": "я",
+          "start": 97610,
+          "stop": 97730,
+          "confidence": 0.92578125
+        },
+        {
+          "word": "правильно",
+          "start": 97730,
+          "stop": 98030,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "понимаю?",
+          "start": 98030,
+          "stop": 98430,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "10-я",
+          "start": 98430,
+          "stop": 98730,
+          "confidence": 0.801513671875
+        },
+        {
+          "word": "городская",
+          "start": 98970,
+          "stop": 99370,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "стоматологическая,",
+          "start": 99370,
+          "stop": 100290,
+          "confidence": 0.9958984375
+        },
+        {
+          "word": "правильно?",
+          "start": 100430,
+          "stop": 100650,
+          "confidence": 0.98974609375
+        },
+        {
+          "word": "поликлиника?",
+          "start": 100810,
+          "stop": 101290,
+          "confidence": 0.9920654296875
+        }
+      ],
+      "stop": "00:01:41.290",
+      "channel": 0,
+      "duration": "00:00:04.520",
+      "start_ms": 96770,
+      "stop_ms": 101290,
+      "duration_ms": 4520,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.1186
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "BORE",
+          "confidence": 0.8560561537742615
+        }
+      }
+    },
+    {
+      "start": "00:01:40.540",
+      "text": "Да да да да. Маяковского 154.",
+      "words": [
+        {
+          "word": "Да",
+          "start": 100540,
+          "stop": 100680,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "да",
+          "start": 100860,
+          "stop": 100940,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "да",
+          "start": 101080,
+          "stop": 101100,
+          "confidence": 0.998046875
+        },
+        {
+          "word": "да.",
+          "start": 101220,
+          "stop": 101220,
+          "confidence": 0.59326171875
+        },
+        {
+          "word": "Маяковского",
+          "start": 101280,
+          "stop": 101740,
+          "confidence": 0.9949951171875
+        },
+        {
+          "word": "154.",
+          "start": 101740,
+          "stop": 102440,
+          "confidence": 0.962646484375
+        }
+      ],
+      "stop": "00:01:42.440",
+      "channel": 1,
+      "duration": "00:00:01.900",
+      "start_ms": 100540,
+      "stop_ms": 102440,
+      "duration_ms": 1900,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "negative": -0.8328
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "13-19",
+          "confidence": 0.9999139308929443
+        },
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.9999126195907593
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.9964630007743835
+        }
+      }
+    },
+    {
+      "start": "00:01:42.590",
+      "text": "Да. А у вас будет строиться где? Чтобы я сейчас сразу подписал Мы.",
+      "words": [
+        {
+          "word": "Да.",
+          "start": 102590,
+          "stop": 103070,
+          "confidence": 0.8955078125
+        },
+        {
+          "word": "А",
+          "start": 103210,
+          "stop": 103310,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "у",
+          "start": 103310,
+          "stop": 103510,
+          "confidence": 1
+        },
+        {
+          "word": "вас",
+          "start": 103510,
+          "stop": 103690,
+          "confidence": 0.94775390625
+        },
+        {
+          "word": "будет",
+          "start": 103690,
+          "stop": 104010,
+          "confidence": 1
+        },
+        {
+          "word": "строиться",
+          "start": 104010,
+          "stop": 104530,
+          "confidence": 0.99658203125
+        },
+        {
+          "word": "где?",
+          "start": 104530,
+          "stop": 104770,
+          "confidence": 0.97314453125
+        },
+        {
+          "word": "Чтобы",
+          "start": 104890,
+          "stop": 105050,
+          "confidence": 0.97021484375
+        },
+        {
+          "word": "я",
+          "start": 105050,
+          "stop": 105210,
+          "confidence": 0.457763671875
+        },
+        {
+          "word": "сейчас",
+          "start": 105210,
+          "stop": 105270,
+          "confidence": 0.84033203125
+        },
+        {
+          "word": "сразу",
+          "start": 105270,
+          "stop": 105650,
+          "confidence": 0.99072265625
+        },
+        {
+          "word": "подписал",
+          "start": 105650,
+          "stop": 106250,
+          "confidence": 0.99560546875
+        },
+        {
+          "word": "Мы.",
+          "start": 106250,
+          "stop": 106470,
+          "confidence": 0.3623046875
+        }
+      ],
+      "stop": "00:01:46.470",
+      "channel": 0,
+      "duration": "00:00:03.880",
+      "start_ms": 102590,
+      "stop_ms": 106470,
+      "duration_ms": 3880,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.96
+      },
+      "emotion": {
+        "neutral": -0.4484
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "NEUTRAL",
+          "confidence": 0.8734879493713379
+        }
+      }
+    },
+    {
+      "start": "00:01:46.40",
+      "text": "Маяковского 31.",
+      "words": [
+        {
+          "word": "Маяковского",
+          "start": 106040,
+          "stop": 106520,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "31.",
+          "start": 106520,
+          "stop": 106840,
+          "confidence": 0.99169921875
+        }
+      ],
+      "stop": "00:01:46.840",
+      "channel": 1,
+      "duration": "00:00:00.800",
+      "start_ms": 106040,
+      "stop_ms": 106840,
+      "duration_ms": 800,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.267
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "20-29",
+          "confidence": 0.9992669224739075
+        },
+        "emotion": {
+          "class": "SUPRISE",
+          "confidence": 0.999910831451416
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.6035526394844055
+        }
+      }
+    },
+    {
+      "start": "00:01:48.510",
+      "text": "Так Маяковского 31 будет строиться, получается, поликлиника к 26-му Ну, даже 25-й 26-й вы говорите.",
+      "words": [
+        {
+          "word": "Так",
+          "start": 108510,
+          "stop": 108990,
+          "confidence": 0.99365234375
+        },
+        {
+          "word": "Маяковского",
+          "start": 108990,
+          "stop": 109470,
+          "confidence": 0.92236328125
+        },
+        {
+          "word": "31",
+          "start": 109470,
+          "stop": 110190,
+          "confidence": 0.822265625
+        },
+        {
+          "word": "будет",
+          "start": 110190,
+          "stop": 110730,
+          "confidence": 0.6552734375
+        },
+        {
+          "word": "строиться,",
+          "start": 110730,
+          "stop": 111250,
+          "confidence": 0.998291015625
+        },
+        {
+          "word": "получается,",
+          "start": 111250,
+          "stop": 111710,
+          "confidence": 0.35107421875
+        },
+        {
+          "word": "поликлиника",
+          "start": 111710,
+          "stop": 112390,
+          "confidence": 0.99755859375
+        },
+        {
+          "word": "к",
+          "start": 112390,
+          "stop": 113350,
+          "confidence": 0.440185546875
+        },
+        {
+          "word": "26-му",
+          "start": 119810,
+          "stop": 120510,
+          "confidence": 0.939697265625
+        },
+        {
+          "word": "Ну,",
+          "start": 121290,
+          "stop": 121830,
+          "confidence": 0.72998046875
+        },
+        {
+          "word": "даже",
+          "start": 121830,
+          "stop": 123010,
+          "confidence": 0.70947265625
+        },
+        {
+          "word": "25-й",
+          "start": 123010,
+          "stop": 124010,
+          "confidence": 0.801513671875
+        },
+        {
+          "word": "26-й",
+          "start": 124190,
+          "stop": 124390,
+          "confidence": 0.9898681640625
+        },
+        {
+          "word": "вы",
+          "start": 124570,
+          "stop": 124690,
+          "confidence": 0.822265625
+        },
+        {
+          "word": "говорите.",
+          "start": 124690,
+          "stop": 125010,
+          "confidence": 0.999755859375
+        }
+      ],
+      "stop": "00:02:05.10",
+      "channel": 0,
+      "duration": "00:00:16.500",
+      "start_ms": 108510,
+      "stop_ms": 125010,
+      "duration_ms": 16500,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "negative": -0.8977
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "DISGUST",
+          "confidence": 0.8190616965293884
+        }
+      }
+    },
+    {
+      "start": "00:01:51.290",
+      "text": "Ну да. Сейчас документация там готовится. Ну, где-то 20. Ой, смотри, какой 20, да? 25-26 год срок сдачи, да?",
+      "words": [
+        {
+          "word": "Ну",
+          "start": 111290,
+          "stop": 111550,
+          "confidence": 0.48388671875
+        },
+        {
+          "word": "да.",
+          "start": 111690,
+          "stop": 111810,
+          "confidence": 0.8056640625
+        },
+        {
+          "word": "Сейчас",
+          "start": 112310,
+          "stop": 112470,
+          "confidence": 0.822265625
+        },
+        {
+          "word": "документация",
+          "start": 112470,
+          "stop": 113170,
+          "confidence": 0.9918619791666666
+        },
+        {
+          "word": "там",
+          "start": 113170,
+          "stop": 113290,
+          "confidence": 0.91748046875
+        },
+        {
+          "word": "готовится.",
+          "start": 113290,
+          "stop": 113850,
+          "confidence": 0.991455078125
+        },
+        {
+          "word": "Ну,",
+          "start": 113850,
+          "stop": 114010,
+          "confidence": 0.88671875
+        },
+        {
+          "word": "где-то",
+          "start": 114130,
+          "stop": 114170,
+          "confidence": 0.9935302734375
+        },
+        {
+          "word": "20.",
+          "start": 114330,
+          "stop": 114670,
+          "confidence": 0.85205078125
+        },
+        {
+          "word": "Ой,",
+          "start": 114990,
+          "stop": 115290,
+          "confidence": 0.922119140625
+        },
+        {
+          "word": "смотри,",
+          "start": 115330,
+          "stop": 115550,
+          "confidence": 0.5191650390625
+        },
+        {
+          "word": "какой",
+          "start": 115750,
+          "stop": 115750,
+          "confidence": 0.95654296875
+        },
+        {
+          "word": "20,",
+          "start": 115750,
+          "stop": 115930,
+          "confidence": 0.85888671875
+        },
+        {
+          "word": "да?",
+          "start": 116050,
+          "stop": 116170,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "25-26",
+          "start": 116610,
+          "stop": 116670,
+          "confidence": 0.9771728515625
+        },
+        {
+          "word": "год",
+          "start": 117730,
+          "stop": 118250,
+          "confidence": 0.99365234375
+        },
+        {
+          "word": "срок",
+          "start": 118250,
+          "stop": 118710,
+          "confidence": 0.759521484375
+        },
+        {
+          "word": "сдачи,",
+          "start": 118710,
+          "stop": 119110,
+          "confidence": 0.9518229166666666
+        },
+        {
+          "word": "да?",
+          "start": 121430,
+          "stop": 122870,
+          "confidence": 0.90625
+        }
+      ],
+      "stop": "00:02:02.870",
+      "channel": 1,
+      "duration": "00:00:11.580",
+      "start_ms": 111290,
+      "stop_ms": 122870,
+      "duration_ms": 11580,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.6963
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "30-39",
+          "confidence": 0.37348073720932007
+        },
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.8298873901367188
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.9406411051750183
+        }
+      }
+    },
+    {
+      "start": "00:02:05.390",
+      "text": "25-й 26-й будет готово.",
+      "words": [
+        {
+          "word": "25-й",
+          "start": 125390,
+          "stop": 125790,
+          "confidence": 0.985595703125
+        },
+        {
+          "word": "26-й",
+          "start": 126010,
+          "stop": 126350,
+          "confidence": 0.999267578125
+        },
+        {
+          "word": "будет",
+          "start": 126590,
+          "stop": 126850,
+          "confidence": 0.99658203125
+        },
+        {
+          "word": "готово.",
+          "start": 126850,
+          "stop": 127350,
+          "confidence": 0.96630859375
+        }
+      ],
+      "stop": "00:02:07.350",
+      "channel": 0,
+      "duration": "00:00:01.960",
+      "start_ms": 125390,
+      "stop_ms": 127350,
+      "duration_ms": 1960,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": 0.5905
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "EXCITEMENT",
+          "confidence": 0.9963027238845825
+        }
+      }
+    },
+    {
+      "start": "00:02:05.580",
+      "text": "Там же будет три учреждения.",
+      "words": [
+        {
+          "word": "Там",
+          "start": 125580,
+          "stop": 129200,
+          "confidence": 0.07708740234375
+        },
+        {
+          "word": "же",
+          "start": 131440,
+          "stop": 132420,
+          "confidence": 0.85205078125
+        },
+        {
+          "word": "будет",
+          "start": 132420,
+          "stop": 132760,
+          "confidence": 0.916015625
+        },
+        {
+          "word": "три",
+          "start": 132760,
+          "stop": 134680,
+          "confidence": 0.65771484375
+        },
+        {
+          "word": "учреждения.",
+          "start": 134680,
+          "stop": 135500,
+          "confidence": 0.9998779296875
+        }
+      ],
+      "stop": "00:02:15.500",
+      "channel": 1,
+      "duration": "00:00:09.920",
+      "start_ms": 125580,
+      "stop_ms": 135500,
+      "duration_ms": 9920,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "neutral": 0.7265
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "13-19",
+          "confidence": 0.601972758769989
+        },
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.6277275681495667
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.9985249638557434
+        }
+      }
+    },
+    {
+      "start": "00:02:07.770",
+      "text": "Там, я так полагаю, уже большое здание. Да, будет. То есть там уже будет много.",
+      "words": [
+        {
+          "word": "Там,",
+          "start": 127770,
+          "stop": 128210,
+          "confidence": 0.98876953125
+        },
+        {
+          "word": "я",
+          "start": 128370,
+          "stop": 128730,
+          "confidence": 1
+        },
+        {
+          "word": "так",
+          "start": 128730,
+          "stop": 128850,
+          "confidence": 1
+        },
+        {
+          "word": "полагаю,",
+          "start": 128850,
+          "stop": 129110,
+          "confidence": 0.9983723958333334
+        },
+        {
+          "word": "уже",
+          "start": 129190,
+          "stop": 129250,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "большое",
+          "start": 129250,
+          "stop": 129570,
+          "confidence": 0.998046875
+        },
+        {
+          "word": "здание.",
+          "start": 129570,
+          "stop": 129970,
+          "confidence": 0.99658203125
+        },
+        {
+          "word": "Да,",
+          "start": 130030,
+          "stop": 130090,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "будет.",
+          "start": 130210,
+          "stop": 130370,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "То",
+          "start": 130510,
+          "stop": 130570,
+          "confidence": 0.99072265625
+        },
+        {
+          "word": "есть",
+          "start": 130570,
+          "stop": 130650,
+          "confidence": 1
+        },
+        {
+          "word": "там",
+          "start": 130650,
+          "stop": 130810,
+          "confidence": 0.998046875
+        },
+        {
+          "word": "уже",
+          "start": 130810,
+          "stop": 131030,
+          "confidence": 1
+        },
+        {
+          "word": "будет",
+          "start": 131030,
+          "stop": 131250,
+          "confidence": 0.998046875
+        },
+        {
+          "word": "много.",
+          "start": 131250,
+          "stop": 131490,
+          "confidence": 1
+        }
+      ],
+      "stop": "00:02:11.490",
+      "channel": 0,
+      "duration": "00:00:03.720",
+      "start_ms": 127770,
+      "stop_ms": 131490,
+      "duration_ms": 3720,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.97
+      },
+      "emotion": {
+        "neutral": 0.1172
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "BORE",
+          "confidence": 0.7372068762779236
+        }
+      }
+    },
+    {
+      "start": "00:02:15.940",
+      "text": "Будет 10-я стоматология, будет центр пластической хирургии и косметологии. С Богдановича переездит и центр эндокринологии.",
+      "words": [
+        {
+          "word": "Будет",
+          "start": 135940,
+          "stop": 136860,
+          "confidence": 0.916259765625
+        },
+        {
+          "word": "10-я",
+          "start": 136860,
+          "stop": 137540,
+          "confidence": 0.6953125
+        },
+        {
+          "word": "стоматология,",
+          "start": 137720,
+          "stop": 138520,
+          "confidence": 0.99794921875
+        },
+        {
+          "word": "будет",
+          "start": 138780,
+          "stop": 139040,
+          "confidence": 0.95361328125
+        },
+        {
+          "word": "центр",
+          "start": 139040,
+          "stop": 143380,
+          "confidence": 0.8673502604166666
+        },
+        {
+          "word": "пластической",
+          "start": 143380,
+          "stop": 143900,
+          "confidence": 0.9913736979166666
+        },
+        {
+          "word": "хирургии",
+          "start": 143900,
+          "stop": 144580,
+          "confidence": 0.9986328125
+        },
+        {
+          "word": "и",
+          "start": 144580,
+          "stop": 145440,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "косметологии.",
+          "start": 145440,
+          "stop": 146320,
+          "confidence": 0.9998779296875
+        },
+        {
+          "word": "С",
+          "start": 146320,
+          "stop": 146460,
+          "confidence": 0.8388671875
+        },
+        {
+          "word": "Богдановича",
+          "start": 146460,
+          "stop": 147100,
+          "confidence": 0.9609375
+        },
+        {
+          "word": "переездит",
+          "start": 147100,
+          "stop": 147780,
+          "confidence": 0.8107096354166666
+        },
+        {
+          "word": "и",
+          "start": 147780,
+          "stop": 148120,
+          "confidence": 0.8427734375
+        },
+        {
+          "word": "центр",
+          "start": 148120,
+          "stop": 149920,
+          "confidence": 0.9972330729166666
+        },
+        {
+          "word": "эндокринологии.",
+          "start": 149920,
+          "stop": 151000,
+          "confidence": 0.9992327008928571
+        }
+      ],
+      "stop": "00:02:31.0",
+      "channel": 1,
+      "duration": "00:00:15.60",
+      "start_ms": 135940,
+      "stop_ms": 151000,
+      "duration_ms": 15060,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.0337
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "20-29",
+          "confidence": 0.9924524426460266
+        },
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.9975722432136536
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.9973083734512329
+        }
+      }
+    },
+    {
+      "start": "00:02:31.340",
+      "text": "Угу.",
+      "words": [
+        {
+          "word": "Угу.",
+          "start": 151340,
+          "stop": 151960,
+          "confidence": 0.556060791015625
+        }
+      ],
+      "stop": "00:02:31.960",
+      "channel": 0,
+      "duration": "00:00:00.620",
+      "start_ms": 151340,
+      "stop_ms": 151960,
+      "duration_ms": 620,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.9
+      },
+      "emotion": {
+        "neutral": 0.1591
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "DISGUST",
+          "confidence": 0.9999983310699463
+        }
+      }
+    },
+    {
+      "start": "00:02:32.340",
+      "text": "То есть это все будет Маяковского 31?",
+      "words": [
+        {
+          "word": "То",
+          "start": 152340,
+          "stop": 152820,
+          "confidence": 0.50341796875
+        },
+        {
+          "word": "есть",
+          "start": 152820,
+          "stop": 152880,
+          "confidence": 0.99560546875
+        },
+        {
+          "word": "это",
+          "start": 152880,
+          "stop": 153020,
+          "confidence": 0.88671875
+        },
+        {
+          "word": "все",
+          "start": 153020,
+          "stop": 153120,
+          "confidence": 0.89453125
+        },
+        {
+          "word": "будет",
+          "start": 153120,
+          "stop": 153300,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "Маяковского",
+          "start": 153300,
+          "stop": 153740,
+          "confidence": 0.8482666015625
+        },
+        {
+          "word": "31?",
+          "start": 153740,
+          "stop": 154000,
+          "confidence": 0.810546875
+        }
+      ],
+      "stop": "00:02:34.0",
+      "channel": 1,
+      "duration": "00:00:01.660",
+      "start_ms": 152340,
+      "stop_ms": 154000,
+      "duration_ms": 1660,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "neutral": -0.4185
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "13-19",
+          "confidence": 0.945481538772583
+        },
+        "emotion": {
+          "class": "NEUTRAL",
+          "confidence": 0.8376689553260803
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 1
+        }
+      }
+    },
+    {
+      "start": "00:02:35.300",
+      "text": "Понял вас.",
+      "words": [
+        {
+          "word": "Понял",
+          "start": 155300,
+          "stop": 155720,
+          "confidence": 0.989501953125
+        },
+        {
+          "word": "вас.",
+          "start": 155720,
+          "stop": 155920,
+          "confidence": 0.81689453125
+        }
+      ],
+      "stop": "00:02:35.920",
+      "channel": 0,
+      "duration": "00:00:00.620",
+      "start_ms": 155300,
+      "stop_ms": 155920,
+      "duration_ms": 620,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.1488
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "NEUTRAL",
+          "confidence": 0.9988929629325867
+        }
+      }
+    },
+    {
+      "start": "00:02:35.440",
+      "text": "Ну и стоматология планируется большая. Там четырехэтажное здание.",
+      "words": [
+        {
+          "word": "Ну",
+          "start": 155440,
+          "stop": 155920,
+          "confidence": 0.99365234375
+        },
+        {
+          "word": "и",
+          "start": 155920,
+          "stop": 156140,
+          "confidence": 0.89892578125
+        },
+        {
+          "word": "стоматология",
+          "start": 156140,
+          "stop": 156840,
+          "confidence": 0.982421875
+        },
+        {
+          "word": "планируется",
+          "start": 156840,
+          "stop": 157380,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "большая.",
+          "start": 157380,
+          "stop": 157920,
+          "confidence": 0.9921875
+        },
+        {
+          "word": "Там",
+          "start": 158080,
+          "stop": 158180,
+          "confidence": 0.91259765625
+        },
+        {
+          "word": "четырехэтажное",
+          "start": 158180,
+          "stop": 158880,
+          "confidence": 0.929931640625
+        },
+        {
+          "word": "здание.",
+          "start": 158880,
+          "stop": 159300,
+          "confidence": 0.999755859375
+        }
+      ],
+      "stop": "00:02:39.300",
+      "channel": 1,
+      "duration": "00:00:03.860",
+      "start_ms": 155440,
+      "stop_ms": 159300,
+      "duration_ms": 3860,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.97
+      },
+      "emotion": {
+        "neutral": 0.0831
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "40-49",
+          "confidence": 0.6053312420845032
+        },
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.9958776235580444
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.9981118440628052
+        }
+      }
+    },
+    {
+      "start": "00:02:39.530",
+      "text": "Ну да, большое издание.",
+      "words": [
+        {
+          "word": "Ну",
+          "start": 159530,
+          "stop": 159949,
+          "confidence": 0.98681640625
+        },
+        {
+          "word": "да,",
+          "start": 160010,
+          "stop": 160130,
+          "confidence": 0.74853515625
+        },
+        {
+          "word": "большое",
+          "start": 160210,
+          "stop": 160470,
+          "confidence": 0.765625
+        },
+        {
+          "word": "издание.",
+          "start": 160470,
+          "stop": 160850,
+          "confidence": 0.896484375
+        }
+      ],
+      "stop": "00:02:40.850",
+      "channel": 0,
+      "duration": "00:00:01.320",
+      "start_ms": 159530,
+      "stop_ms": 160850,
+      "duration_ms": 1320,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.2173
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "EXCITEMENT",
+          "confidence": 0.9691892266273499
+        }
+      }
+    },
+    {
+      "start": "00:02:39.620",
+      "text": "Там, конечно же, нам нужно будет, да?",
+      "words": [
+        {
+          "word": "Там,",
+          "start": 159620,
+          "stop": 159720,
+          "confidence": 0.5107421875
+        },
+        {
+          "word": "конечно",
+          "start": 159720,
+          "stop": 160240,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "же,",
+          "start": 160240,
+          "stop": 160480,
+          "confidence": 0.990234375
+        },
+        {
+          "word": "нам",
+          "start": 160560,
+          "stop": 160660,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "нужно",
+          "start": 160660,
+          "stop": 160960,
+          "confidence": 0.99169921875
+        },
+        {
+          "word": "будет,",
+          "start": 160960,
+          "stop": 161360,
+          "confidence": 1
+        },
+        {
+          "word": "да?",
+          "start": 161380,
+          "stop": 161580,
+          "confidence": 0.9931640625
+        }
+      ],
+      "stop": "00:02:41.580",
+      "channel": 1,
+      "duration": "00:00:01.960",
+      "start_ms": 159620,
+      "stop_ms": 161580,
+      "duration_ms": 1960,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "neutral": 0.1789
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "20-29",
+          "confidence": 0.9997809529304504
+        },
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.4936005473136902
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.7491678595542908
+        }
+      }
+    },
+    {
+      "start": "00:02:40.850",
+      "text": "Уже можно развернуться.",
+      "words": [
+        {
+          "word": "Уже",
+          "start": 160850,
+          "stop": 161030,
+          "confidence": 0.65673828125
+        },
+        {
+          "word": "можно",
+          "start": 161030,
+          "stop": 161270,
+          "confidence": 0.90380859375
+        },
+        {
+          "word": "развернуться.",
+          "start": 161270,
+          "stop": 161830,
+          "confidence": 0.9988606770833334
+        }
+      ],
+      "stop": "00:02:41.830",
+      "channel": 0,
+      "duration": "00:00:00.980",
+      "start_ms": 160850,
+      "stop_ms": 161830,
+      "duration_ms": 980,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "neutral": -0.1537
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "BORE",
+          "confidence": 0.999658465385437
+        }
+      }
+    },
+    {
+      "start": "00:02:41.760",
+      "text": "Там же нужно будет нам колл-центр Он там и будет, и планируется как таковой колл-центр Я думаю, что с середины 1924-го ближе к 1925-му году.",
+      "words": [
+        {
+          "word": "Там",
+          "start": 161760,
+          "stop": 161900,
+          "confidence": 0.9970703125
+        },
+        {
+          "word": "же",
+          "start": 161900,
+          "stop": 162040,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "нужно",
+          "start": 162040,
+          "stop": 162300,
+          "confidence": 0.994140625
+        },
+        {
+          "word": "будет",
+          "start": 162300,
+          "stop": 162600,
+          "confidence": 1
+        },
+        {
+          "word": "нам",
+          "start": 162600,
+          "stop": 162760,
+          "confidence": 0.35595703125
+        },
+        {
+          "word": "колл-центр",
+          "start": 162760,
+          "stop": 163060,
+          "confidence": 0.93560791015625
+        },
+        {
+          "word": "Он",
+          "start": 164020,
+          "stop": 164500,
+          "confidence": 0.26318359375
+        },
+        {
+          "word": "там",
+          "start": 164500,
+          "stop": 164620,
+          "confidence": 0.99609375
+        },
+        {
+          "word": "и",
+          "start": 164620,
+          "stop": 164800,
+          "confidence": 1
+        },
+        {
+          "word": "будет,",
+          "start": 164800,
+          "stop": 165100,
+          "confidence": 1
+        },
+        {
+          "word": "и",
+          "start": 165300,
+          "stop": 165300,
+          "confidence": 0.99267578125
+        },
+        {
+          "word": "планируется",
+          "start": 165300,
+          "stop": 165880,
+          "confidence": 0.9998779296875
+        },
+        {
+          "word": "как",
+          "start": 165880,
+          "stop": 166120,
+          "confidence": 0.798828125
+        },
+        {
+          "word": "таковой",
+          "start": 166120,
+          "stop": 166540,
+          "confidence": 0.997314453125
+        },
+        {
+          "word": "колл-центр",
+          "start": 166540,
+          "stop": 166920,
+          "confidence": 0.99945068359375
+        },
+        {
+          "word": "Я",
+          "start": 176580,
+          "stop": 176580,
+          "confidence": 0.401123046875
+        },
+        {
+          "word": "думаю,",
+          "start": 176580,
+          "stop": 176720,
+          "confidence": 0.98681640625
+        },
+        {
+          "word": "что",
+          "start": 176820,
+          "stop": 176860,
+          "confidence": 0.9658203125
+        },
+        {
+          "word": "с",
+          "start": 176860,
+          "stop": 177960,
+          "confidence": 0.2098388671875
+        },
+        {
+          "word": "середины",
+          "start": 177960,
+          "stop": 178280,
+          "confidence": 0.9593098958333334
+        },
+        {
+          "word": "1924-го",
+          "start": 178280,
+          "stop": 179360,
+          "confidence": 0.6199951171875
+        },
+        {
+          "word": "ближе",
+          "start": 179880,
+          "stop": 180220,
+          "confidence": 0.90087890625
+        },
+        {
+          "word": "к",
+          "start": 180220,
+          "stop": 180340,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "1925-му",
+          "start": 180340,
+          "stop": 180720,
+          "confidence": 0.8724365234375
+        },
+        {
+          "word": "году.",
+          "start": 180960,
+          "stop": 181260,
+          "confidence": 0.86669921875
+        }
+      ],
+      "stop": "00:03:01.260",
+      "channel": 1,
+      "duration": "00:00:19.500",
+      "start_ms": 161760,
+      "stop_ms": 181260,
+      "duration_ms": 19500,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.94
+      },
+      "emotion": {
+        "neutral": 0.1374
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "20-29",
+          "confidence": 0.6620973348617554
+        },
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.8380934596061707
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.8905065059661865
+        }
+      }
+    },
+    {
+      "start": "00:02:43.130",
+      "text": "Да. Угу. А когда, вот, будете с документами разбираться, чтобы все это дело уже. Ну, с нашей точки стороны. Мы там тоже, вот, готовили что-то для вас, чтобы могли, надо сказать, держать руку на пульсе.",
+      "words": [
+        {
+          "word": "Да. ",
+          "start": 163130,
+          "stop": 163550,
+          "confidence": 0.984375
+        },
+        {
+          "word": "Угу.",
+          "start": 165950,
+          "stop": 166270,
+          "confidence": 0.9736328125
+        },
+        {
+          "word": "А",
+          "start": 167750,
+          "stop": 167970,
+          "confidence": 0.990234375
+        },
+        {
+          "word": "когда,",
+          "start": 167970,
+          "stop": 168270,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "вот,",
+          "start": 168270,
+          "stop": 168450,
+          "confidence": 0.91015625
+        },
+        {
+          "word": "будете",
+          "start": 168450,
+          "stop": 168730,
+          "confidence": 0.97265625
+        },
+        {
+          "word": "с",
+          "start": 168730,
+          "stop": 168870,
+          "confidence": 0.9921875
+        },
+        {
+          "word": "документами",
+          "start": 168870,
+          "stop": 169390,
+          "confidence": 1
+        },
+        {
+          "word": "разбираться,",
+          "start": 169390,
+          "stop": 169930,
+          "confidence": 1
+        },
+        {
+          "word": "чтобы",
+          "start": 170050,
+          "stop": 170190,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "все",
+          "start": 170190,
+          "stop": 170370,
+          "confidence": 0.99072265625
+        },
+        {
+          "word": "это",
+          "start": 170370,
+          "stop": 170510,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "дело",
+          "start": 170510,
+          "stop": 170750,
+          "confidence": 0.98974609375
+        },
+        {
+          "word": "уже.",
+          "start": 170750,
+          "stop": 170950,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "Ну,",
+          "start": 171070,
+          "stop": 171150,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "с",
+          "start": 171350,
+          "stop": 171870,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "нашей",
+          "start": 171870,
+          "stop": 172090,
+          "confidence": 1
+        },
+        {
+          "word": "точки",
+          "start": 172090,
+          "stop": 172350,
+          "confidence": 1
+        },
+        {
+          "word": "стороны.",
+          "start": 172350,
+          "stop": 172750,
+          "confidence": 0.990234375
+        },
+        {
+          "word": "Мы",
+          "start": 172890,
+          "stop": 172970,
+          "confidence": 0.99853515625
+        },
+        {
+          "word": "там",
+          "start": 172970,
+          "stop": 173090,
+          "confidence": 1
+        },
+        {
+          "word": "тоже,",
+          "start": 173090,
+          "stop": 173310,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "вот,",
+          "start": 173310,
+          "stop": 173450,
+          "confidence": 0.92333984375
+        },
+        {
+          "word": "готовили",
+          "start": 173450,
+          "stop": 173890,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "что-то",
+          "start": 173890,
+          "stop": 174090,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "для",
+          "start": 174190,
+          "stop": 174350,
+          "confidence": 1
+        },
+        {
+          "word": "вас,",
+          "start": 174350,
+          "stop": 174530,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "чтобы",
+          "start": 174630,
+          "stop": 174750,
+          "confidence": 0.998046875
+        },
+        {
+          "word": "могли,",
+          "start": 174750,
+          "stop": 175090,
+          "confidence": 0.99462890625
+        },
+        {
+          "word": "надо",
+          "start": 175490,
+          "stop": 175670,
+          "confidence": 0.609375
+        },
+        {
+          "word": "сказать,",
+          "start": 175670,
+          "stop": 175830,
+          "confidence": 0.98681640625
+        },
+        {
+          "word": "держать",
+          "start": 175890,
+          "stop": 176190,
+          "confidence": 0.999755859375
+        },
+        {
+          "word": "руку",
+          "start": 176190,
+          "stop": 176430,
+          "confidence": 0.996826171875
+        },
+        {
+          "word": "на",
+          "start": 176430,
+          "stop": 176570,
+          "confidence": 1
+        },
+        {
+          "word": "пульсе.",
+          "start": 176570,
+          "stop": 176950,
+          "confidence": 0.98388671875
+        }
+      ],
+      "stop": "00:02:56.950",
+      "channel": 0,
+      "duration": "00:00:13.820",
+      "start_ms": 163130,
+      "stop_ms": 176950,
+      "duration_ms": 13820,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.73
+      },
+      "emotion": {
+        "negative": -0.7509
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "BORE",
+          "confidence": 0.8141094446182251
+        }
+      }
+    },
+    {
+      "start": "00:03:01.340",
+      "text": "я думаю, такая история.",
+      "words": [
+        {
+          "word": "я",
+          "start": 181340,
+          "stop": 181380,
+          "confidence": 0.5390625
+        },
+        {
+          "word": "думаю,",
+          "start": 181380,
+          "stop": 181600,
+          "confidence": 0.99658203125
+        },
+        {
+          "word": "такая",
+          "start": 181780,
+          "stop": 181900,
+          "confidence": 0.84716796875
+        },
+        {
+          "word": "история.",
+          "start": 181900,
+          "stop": 182840,
+          "confidence": 0.99658203125
+        }
+      ],
+      "stop": "00:03:02.840",
+      "channel": 1,
+      "duration": "00:00:01.500",
+      "start_ms": 181340,
+      "stop_ms": 182840,
+      "duration_ms": 1500,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.0271
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "13-19",
+          "confidence": 0.9664115905761719
+        },
+        "emotion": {
+          "class": "BORE",
+          "confidence": 0.998831570148468
+        },
+        "gender": {
+          "class": "MALE",
+          "confidence": 0.9999971389770508
+        }
+      }
+    },
+    {
+      "start": "00:03:02.800",
+      "text": "То есть там уже лучше вам звонить и все, конфигурацию узнавать, какая там будет. Окей.",
+      "words": [
+        {
+          "word": "То",
+          "start": 182800,
+          "stop": 183220,
+          "confidence": 0.994140625
+        },
+        {
+          "word": "есть",
+          "start": 183220,
+          "stop": 183280,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "там",
+          "start": 183280,
+          "stop": 183460,
+          "confidence": 0.75439453125
+        },
+        {
+          "word": "уже",
+          "start": 183460,
+          "stop": 183600,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "лучше",
+          "start": 183600,
+          "stop": 183800,
+          "confidence": 1
+        },
+        {
+          "word": "вам",
+          "start": 183800,
+          "stop": 183960,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "звонить",
+          "start": 183960,
+          "stop": 184400,
+          "confidence": 0.982421875
+        },
+        {
+          "word": "и",
+          "start": 184400,
+          "stop": 184520,
+          "confidence": 0.982421875
+        },
+        {
+          "word": "все,",
+          "start": 184520,
+          "stop": 184700,
+          "confidence": 0.9833984375
+        },
+        {
+          "word": "конфигурацию",
+          "start": 184880,
+          "stop": 185580,
+          "confidence": 0.8809814453125
+        },
+        {
+          "word": "узнавать,",
+          "start": 185580,
+          "stop": 185940,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "какая",
+          "start": 185980,
+          "stop": 186180,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "там",
+          "start": 186180,
+          "stop": 186380,
+          "confidence": 1
+        },
+        {
+          "word": "будет.",
+          "start": 186380,
+          "stop": 186660,
+          "confidence": 1
+        },
+        {
+          "word": "Окей.",
+          "start": 186940,
+          "stop": 187360,
+          "confidence": 0.96728515625
+        }
+      ],
+      "stop": "00:03:07.360",
+      "channel": 0,
+      "duration": "00:00:04.560",
+      "start_ms": 182800,
+      "stop_ms": 187360,
+      "duration_ms": 4560,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.83
+      },
+      "emotion": {
+        "negative": -0.6102
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "NEUTRAL",
+          "confidence": 0.8344581723213196
+        }
+      }
+    },
+    {
+      "start": "00:03:05.930",
+      "text": "Ну да, более какие-то сейчас пока. там же даже техника, не знаю, заехала на этот объект или нет.",
+      "words": [
+        {
+          "word": "Ну",
+          "start": 185930,
+          "stop": 186010,
+          "confidence": 0.40869140625
+        },
+        {
+          "word": "да,",
+          "start": 186010,
+          "stop": 186130,
+          "confidence": 0.8115234375
+        },
+        {
+          "word": "более",
+          "start": 186410,
+          "stop": 186470,
+          "confidence": 0.7734375
+        },
+        {
+          "word": "какие-то",
+          "start": 186470,
+          "stop": 186790,
+          "confidence": 0.7811279296875
+        },
+        {
+          "word": "сейчас",
+          "start": 187030,
+          "stop": 187070,
+          "confidence": 0.490478515625
+        },
+        {
+          "word": "пока.",
+          "start": 187070,
+          "stop": 187390,
+          "confidence": 0.95166015625
+        },
+        {
+          "word": "там",
+          "start": 187710,
+          "stop": 187910,
+          "confidence": 0.97509765625
+        },
+        {
+          "word": "же",
+          "start": 187910,
+          "stop": 188030,
+          "confidence": 0.54833984375
+        },
+        {
+          "word": "даже",
+          "start": 188030,
+          "stop": 188210,
+          "confidence": 0.91015625
+        },
+        {
+          "word": "техника,",
+          "start": 188210,
+          "stop": 188730,
+          "confidence": 0.969970703125
+        },
+        {
+          "word": "не",
+          "start": 188790,
+          "stop": 189110,
+          "confidence": 0.97021484375
+        },
+        {
+          "word": "знаю,",
+          "start": 189110,
+          "stop": 189210,
+          "confidence": 0.982421875
+        },
+        {
+          "word": "заехала",
+          "start": 189310,
+          "stop": 189750,
+          "confidence": 0.9889322916666666
+        },
+        {
+          "word": "на",
+          "start": 189750,
+          "stop": 189890,
+          "confidence": 0.978515625
+        },
+        {
+          "word": "этот",
+          "start": 189890,
+          "stop": 190090,
+          "confidence": 0.9931640625
+        },
+        {
+          "word": "объект",
+          "start": 190090,
+          "stop": 190570,
+          "confidence": 0.9912109375
+        },
+        {
+          "word": "или",
+          "start": 190570,
+          "stop": 190730,
+          "confidence": 0.89453125
+        },
+        {
+          "word": "нет.",
+          "start": 190730,
+          "stop": 191050,
+          "confidence": 0.99609375
+        }
+      ],
+      "stop": "00:03:11.50",
+      "channel": 1,
+      "duration": "00:00:05.120",
+      "start_ms": 185930,
+      "stop_ms": 191050,
+      "duration_ms": 5120,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "negative": -0.5648
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "20-29",
+          "confidence": 0.9850054979324341
+        },
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.9318282008171082
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.818374514579773
+        }
+      }
+    },
+    {
+      "start": "00:03:08.900",
+      "text": "Ну, понятно, да. Ну, мы просто так уже, чтобы, точно, знаете, не забыть про вас, уже про метку хотим сделать.",
+      "words": [
+        {
+          "word": "Ну,",
+          "start": 188900,
+          "stop": 189380,
+          "confidence": 0.95751953125
+        },
+        {
+          "word": "понятно,",
+          "start": 189380,
+          "stop": 189860,
+          "confidence": 0.9150390625
+        },
+        {
+          "word": "да.",
+          "start": 190200,
+          "stop": 190280,
+          "confidence": 0.9970703125
+        },
+        {
+          "word": "Ну,",
+          "start": 190380,
+          "stop": 190480,
+          "confidence": 0.460205078125
+        },
+        {
+          "word": "мы",
+          "start": 190560,
+          "stop": 190600,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "просто",
+          "start": 190600,
+          "stop": 190900,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "так",
+          "start": 190900,
+          "stop": 191140,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "уже,",
+          "start": 191140,
+          "stop": 191540,
+          "confidence": 0.73046875
+        },
+        {
+          "word": "чтобы,",
+          "start": 191640,
+          "stop": 191820,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "точно,",
+          "start": 191820,
+          "stop": 192160,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "знаете,",
+          "start": 192420,
+          "stop": 192720,
+          "confidence": 0.97705078125
+        },
+        {
+          "word": "не",
+          "start": 192840,
+          "stop": 192960,
+          "confidence": 1
+        },
+        {
+          "word": "забыть",
+          "start": 192960,
+          "stop": 193280,
+          "confidence": 0.9993489583333334
+        },
+        {
+          "word": "про",
+          "start": 193280,
+          "stop": 193440,
+          "confidence": 1
+        },
+        {
+          "word": "вас,",
+          "start": 193440,
+          "stop": 193720,
+          "confidence": 0.99560546875
+        },
+        {
+          "word": "уже",
+          "start": 193720,
+          "stop": 193880,
+          "confidence": 0.2337646484375
+        },
+        {
+          "word": "про",
+          "start": 194020,
+          "stop": 194180,
+          "confidence": 0.4326171875
+        },
+        {
+          "word": "метку",
+          "start": 194180,
+          "stop": 194580,
+          "confidence": 0.826904296875
+        },
+        {
+          "word": "хотим",
+          "start": 194580,
+          "stop": 194900,
+          "confidence": 0.997314453125
+        },
+        {
+          "word": "сделать.",
+          "start": 194900,
+          "stop": 195180,
+          "confidence": 1
+        }
+      ],
+      "stop": "00:03:15.180",
+      "channel": 0,
+      "duration": "00:00:06.280",
+      "start_ms": 188900,
+      "stop_ms": 195180,
+      "duration_ms": 6280,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "negative": -0.3686
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.7367777228355408
+        }
+      }
+    },
+    {
+      "start": "00:03:14.380",
+      "text": "Да да. Ну, 20 тысяч в конец 24-го да?",
+      "words": [
+        {
+          "word": "Да",
+          "start": 194380,
+          "stop": 194700,
+          "confidence": 0.70751953125
+        },
+        {
+          "word": "да.",
+          "start": 194860,
+          "stop": 194960,
+          "confidence": 0.8896484375
+        },
+        {
+          "word": "Ну,",
+          "start": 195360,
+          "stop": 195460,
+          "confidence": 0.9404296875
+        },
+        {
+          "word": "20",
+          "start": 195460,
+          "stop": 195840,
+          "confidence": 0.58544921875
+        },
+        {
+          "word": "тысяч",
+          "start": 195840,
+          "stop": 196060,
+          "confidence": 0.2193603515625
+        },
+        {
+          "word": "в",
+          "start": 196180,
+          "stop": 196280,
+          "confidence": 0.4990234375
+        },
+        {
+          "word": "конец",
+          "start": 196280,
+          "stop": 196500,
+          "confidence": 0.88037109375
+        },
+        {
+          "word": "24-го",
+          "start": 196500,
+          "stop": 196840,
+          "confidence": 0.7816162109375
+        },
+        {
+          "word": "да?",
+          "start": 198840,
+          "stop": 199240,
+          "confidence": 0.9794921875
+        }
+      ],
+      "stop": "00:03:19.240",
+      "channel": 1,
+      "duration": "00:00:04.860",
+      "start_ms": 194380,
+      "stop_ms": 199240,
+      "duration_ms": 4860,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "neutral": -0.5706
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "13-19",
+          "confidence": 0.7423645853996277
+        },
+        "emotion": {
+          "class": "EXCITEMENT",
+          "confidence": 0.8091341257095337
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.8268263339996338
+        }
+      }
+    },
+    {
+      "start": "00:03:17.420",
+      "text": "Окей, хорошо. Все. тогда на связи, Елена Александровна.",
+      "words": [
+        {
+          "word": "Окей,",
+          "start": 197420,
+          "stop": 197900,
+          "confidence": 0.99658203125
+        },
+        {
+          "word": "хорошо.",
+          "start": 197980,
+          "stop": 198200,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "Все.",
+          "start": 198440,
+          "stop": 198580,
+          "confidence": 0.87744140625
+        },
+        {
+          "word": "тогда",
+          "start": 198580,
+          "stop": 198860,
+          "confidence": 0.55615234375
+        },
+        {
+          "word": "на",
+          "start": 198860,
+          "stop": 199100,
+          "confidence": 0.53466796875
+        },
+        {
+          "word": "связи,",
+          "start": 199100,
+          "stop": 199500,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "Елена",
+          "start": 199560,
+          "stop": 199720,
+          "confidence": 0.99462890625
+        },
+        {
+          "word": "Александровна.",
+          "start": 199720,
+          "stop": 200320,
+          "confidence": 0.9996744791666666
+        }
+      ],
+      "stop": "00:03:20.320",
+      "channel": 0,
+      "duration": "00:00:02.900",
+      "start_ms": 197420,
+      "stop_ms": 200320,
+      "duration_ms": 2900,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "neutral": 0.0906
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "NEUTRAL",
+          "confidence": 0.9991843104362488
+        }
+      }
+    },
+    {
+      "start": "00:03:19.660",
+      "text": "Все, да? Ну, в связи, да.",
+      "words": [
+        {
+          "word": "Все,",
+          "start": 199660,
+          "stop": 199760,
+          "confidence": 0.4765625
+        },
+        {
+          "word": "да?",
+          "start": 199960,
+          "stop": 200040,
+          "confidence": 0.966796875
+        },
+        {
+          "word": "Ну,",
+          "start": 200160,
+          "stop": 200260,
+          "confidence": 0.57861328125
+        },
+        {
+          "word": "в",
+          "start": 200260,
+          "stop": 200380,
+          "confidence": 0.59619140625
+        },
+        {
+          "word": "связи,",
+          "start": 200380,
+          "stop": 200700,
+          "confidence": 0.7149658203125
+        },
+        {
+          "word": "да.",
+          "start": 200720,
+          "stop": 200800,
+          "confidence": 0.9765625
+        }
+      ],
+      "stop": "00:03:20.800",
+      "channel": 1,
+      "duration": "00:00:01.140",
+      "start_ms": 199660,
+      "stop_ms": 200800,
+      "duration_ms": 1140,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.5417
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "13-19",
+          "confidence": 0.9998842477798462
+        },
+        "emotion": {
+          "class": "SUPRISE",
+          "confidence": 1
+        },
+        "gender": {
+          "class": "FEMALE",
+          "confidence": 0.789215087890625
+        }
+      }
+    },
+    {
+      "start": "00:03:20.720",
+      "text": "Да.",
+      "words": [
+        {
+          "word": "Да.",
+          "start": 200720,
+          "stop": 200820,
+          "confidence": 0.9072265625
+        }
+      ],
+      "stop": "00:03:20.820",
+      "channel": 0,
+      "duration": "00:00:00.100",
+      "start_ms": 200720,
+      "stop_ms": 200820,
+      "duration_ms": 100,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "neutral": -0.1306
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "NEUTRAL",
+          "confidence": 0.7246266603469849
+        }
+      }
+    },
+    {
+      "start": "00:03:21.0",
+      "text": "Всего хорошего сегодня.",
+      "words": [
+        {
+          "word": "Всего",
+          "start": 201000,
+          "stop": 201140,
+          "confidence": 0.95654296875
+        },
+        {
+          "word": "хорошего",
+          "start": 201140,
+          "stop": 201640,
+          "confidence": 0.989990234375
+        },
+        {
+          "word": "сегодня.",
+          "start": 201640,
+          "stop": 201900,
+          "confidence": 0.5966796875
+        }
+      ],
+      "stop": "00:03:21.900",
+      "channel": 1,
+      "duration": "00:00:00.900",
+      "start_ms": 201000,
+      "stop_ms": 201900,
+      "duration_ms": 900,
+      "speaker": 0,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.99
+      },
+      "emotion": {
+        "positive": 0.948
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "age": {
+          "class": "13-19",
+          "confidence": 0.9999998807907104
+        },
+        "emotion": {
+          "class": "SADNESS",
+          "confidence": 0.9748662710189819
+        },
+        "gender": {
+          "class": "MALE",
+          "confidence": 0.9703896641731262
+        }
+      }
+    },
+    {
+      "start": "00:03:21.500",
+      "text": "Хорошего дня вам. До свидания.",
+      "words": [
+        {
+          "word": "Хорошего",
+          "start": 201500,
+          "stop": 201960,
+          "confidence": 0.9638671875
+        },
+        {
+          "word": "дня",
+          "start": 201960,
+          "stop": 202120,
+          "confidence": 0.9990234375
+        },
+        {
+          "word": "вам.",
+          "start": 202120,
+          "stop": 202240,
+          "confidence": 0.80419921875
+        },
+        {
+          "word": "До",
+          "start": 202280,
+          "stop": 202360,
+          "confidence": 0.99951171875
+        },
+        {
+          "word": "свидания.",
+          "start": 202360,
+          "stop": 202660,
+          "confidence": 0.999267578125
+        }
+      ],
+      "stop": "00:03:22.660",
+      "channel": 0,
+      "duration": "00:00:01.160",
+      "start_ms": 201500,
+      "stop_ms": 202660,
+      "duration_ms": 1160,
+      "speaker": 1,
+      "toxicity": {
+        "insult": 0,
+        "obscenity": 0,
+        "threat": 0,
+        "politeness": 0.98
+      },
+      "emotion": {
+        "positive": 0.8317
+      },
+      "classifiers": {
+        "smc": {
+          "Оценка_разговора_1": {
+            "error": 1,
+            "message": "Model doesn't exist"
+          }
+        },
+        "see": {}
+      },
+      "voice_analysis": {
+        "emotion": {
+          "class": "NEUTRAL",
+          "confidence": 0.9848366379737854
+        }
+      }
+    }
+  ],
+  "text": "",
+  "id":3, "fname": "chat4.json"
+},
+  {
   "model": "common",
   "speakers": [
     {

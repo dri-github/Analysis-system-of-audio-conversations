@@ -1,105 +1,126 @@
-import React, { useMemo } from 'react';
-import { Box, Typography } from '@mui/material';
+import React from 'react';
+import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { LinearProgress } from '@mui/material';
-import { formatDuration, getTopEmotion, getTopClass } from './utils';
 import { styles } from './styles';
+import conversationStats from '../sta.json'; // Импорт JSON файла для fallback
 
+const StatsPanel = ({ stats }) => {
+  // Используем данные из props, если они есть, иначе fallback на JSON
+  const safeStats = stats ;
 
-const StatsPanel = ({ conversation, fragments }) => {
-  const stats = useMemo(() => {
-    if (!fragments || !Array.isArray(fragments) || fragments.length === 0 || !conversation) {
-      return {
-        totalDuration: '00:00:00',
-        speakerCount: 0,
-        avgDuration: 0,
-        topEmotion: 'Не определено',
-        topClass: 'Не определено',
-        operatorTime: 0,
-        clientTime: 0,
-      };
-    }
-
-    let operatorSeconds = 0;
-    let clientSeconds = 0;
-    fragments.forEach(f => {
-      const [hours, minutes, seconds] = f.duration.split(':').map(Number);
-      const dur = hours * 3600 + minutes * 60 + seconds;
-      if (f.speaker === 0) {
-        operatorSeconds += dur;
-      } else {
-        clientSeconds += dur;
-      }
-    });
-    const totalSeconds = operatorSeconds + clientSeconds;
-    const operatorPercent = totalSeconds > 0 ? (operatorSeconds / totalSeconds * 100).toFixed(2) : 0;
-    const clientPercent = totalSeconds > 0 ? (clientSeconds / totalSeconds * 100).toFixed(2) : 0;
-
-    const durations = fragments.map(f => {
-      const [hours, minutes, seconds] = f.duration.split(':').map(Number);
-      return hours * 3600 + minutes * 60 + seconds;
-    });
-    const totalDur = durations.reduce((sum, d) => sum + d, 0);
-    const avgSeconds = totalDur / fragments.length || 0;
-
-    return {
-      totalDuration: formatDuration(totalDur),
-      speakerCount: conversation.speakers ? conversation.speakers.length : 0,
-      avgDuration: avgSeconds.toFixed(2),
-      topEmotion: getTopEmotion(fragments) || 'Не определено',
-      topClass: getTopClass(fragments) || 'Не определено',
-      operatorTime: parseFloat(operatorPercent),
-      clientTime: parseFloat(clientPercent),
-    };
-  }, [conversation.speakers, fragments]);
+  // Функция для форматирования времени из миллисекунд в формат MM:SS
+  const formatTime = (ms) => {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   return (
     <Box sx={styles.statsPanel}>
-      <Typography variant="h6" gutterBottom sx={{ fontSize: '2rem' }}>Статистика разговора</Typography>
-      
-      {/* Графики: Два progress bars с улучшенными стилями */}
-      <Box sx={styles.progressContainer}>
-        <Box sx={styles.progressItem}>
-          <Typography variant="subtitle2" color="#000000ff" sx={styles.statText}>
-            Время работы оператора
-          </Typography>
-          <LinearProgress 
-            variant="determinate" 
-            value={stats.operatorTime} 
-            sx={{
-              ...styles.progressBar,
-              '& .MuiLinearProgress-bar': { ...styles.progressBar.operatorBar },
-            }} 
-          />
-          <Typography variant="body2" sx={{ ...styles.statText2, color: '#13e11eff' }}>
-            {stats.operatorTime}%
-          </Typography>
-        </Box>
-        
-        <Box sx={styles.progressItem}>
-          <Typography variant="subtitle2" color="#000000ff" sx={styles.statText}>
-            Время работы клиента
-          </Typography>
-          <LinearProgress 
-            variant="determinate" 
-            value={stats.clientTime} 
-            sx={{
-              ...styles.progressBar,
-              '& .MuiLinearProgress-bar': { ...styles.progressBar.clientBar },
-            }} 
-          />
-          <Typography variant="body2" sx={{ ...styles.statText2, color: '#2196f3' }}>
-            {stats.clientTime}%
-          </Typography>
-        </Box>
+      <Typography variant="h6" gutterBottom sx={{ fontSize: '2rem' }}>
+        Статистика разговора
+      </Typography>
+
+      {/* Общая статистика */}
+      <Box sx={styles.statsGrid}>
+        <Typography><strong>Общее время:</strong> {safeStats.totalDuration}</Typography>
+        <Typography><strong>Спикеров:</strong> {safeStats.speakerCount}</Typography>
+        <Typography><strong>Средняя длина фрагмента:</strong> {safeStats.avgFragmentDuration} сек</Typography>
+        <Typography><strong>Топ эмоция:</strong> {safeStats.topEmotion}</Typography>
+        <Typography><strong>Топ класс:</strong> {safeStats.topClass}</Typography>
+        <Typography><strong>Процент наложений:</strong> {safeStats.overlapDetails.percentage}%</Typography>
       </Box>
 
-      {/* Остальная статистика */}
-     <Box sx={styles.statsGrid}>
-        <Typography><strong>Общее время:</strong> {stats.totalDuration}</Typography>
-        <Typography><strong>Спикеров:</strong> {stats.speakerCount}</Typography>
-        <Typography><strong>Топ эмоция:</strong> {stats.topEmotion}</Typography>
-        <Typography><strong>Топ класс:</strong> {stats.topClass}</Typography>
+      {/* Бар чарт для спикеров */}
+      <Box sx={styles.chartContainer}>
+        <Typography variant="subtitle1" sx={styles.chartTitle}>
+          Процент времени спикеров
+        </Typography>
+        <BarChart
+          series={[{ data: safeStats.speakerStats.map(s => s.percentage) }]}
+          xAxis={[{ scaleType: 'band', data: safeStats.speakerStats.map(s => `Спикер ${s.id} (${s.gender}, ${s.age})`) }]}
+          height={300}
+          sx={styles.barChart}
+        />
+      </Box>
+
+      {/* Бар чарт для классов */}
+      <Box sx={styles.chartContainer}>
+        <Typography variant="subtitle1" sx={styles.chartTitle}>
+          Статистика классов (кол-во и %)
+        </Typography>
+        <BarChart
+          series={[{ data: safeStats.classStats.map(c => c.percentage) }]}
+          xAxis={[{ scaleType: 'band', data: safeStats.classStats.map(c => `${c.class} (${c.count})`) }]}
+          height={300}
+          sx={styles.barChart}
+        />
+      </Box>
+
+      {/* Бар чарт для эмоций */}
+      <Box sx={styles.chartContainer}>
+        <Typography variant="subtitle1" sx={styles.chartTitle}>
+          Статистика эмоций (кол-во и %)
+        </Typography>
+        <BarChart
+          series={[{ data: safeStats.emotionStats.map(e => e.percentage) }]}
+          xAxis={[{ scaleType: 'band', data: safeStats.emotionStats.map(e => `${e.emotion} (${e.count})`) }]}
+          height={300}
+          sx={styles.barChart}
+        />
+      </Box>
+
+      {/* Прогресс бар для наложений */}
+      <Box sx={styles.progressItem}>
+        <Typography variant="subtitle2" sx={styles.statText}>
+          Процент наложений речи
+        </Typography>
+        <LinearProgress
+          variant="determinate"
+          value={safeStats.overlapDetails.percentage}
+          sx={{
+            ...styles.progressBar,
+            '& .MuiLinearProgress-bar': { backgroundColor: '#ff9800' },
+          }}
+        />
+        <Typography variant="body2" sx={styles.statText2}>
+          {safeStats.overlapDetails.percentage}%
+        </Typography>
+      </Box>
+
+      {/* Таблица с деталями наложений */}
+      <Box sx={styles.chartContainer}>
+        <Typography variant="subtitle1" sx={styles.chartTitle}>
+          Детали наложений
+        </Typography>
+        <Table sx={{ minWidth: 650 }} aria-label="overlap table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Начало</TableCell>
+              <TableCell>Конец</TableCell>
+              <TableCell>Длительность</TableCell>
+              <TableCell>Спикеры</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {safeStats.overlapDetails.intervals.map((interval, index) => (
+              <TableRow key={index}>
+                <TableCell>{formatTime(interval.start_ms)}</TableCell>
+                <TableCell>{formatTime(interval.end_ms)}</TableCell>
+                <TableCell>{formatTime(interval.duration_ms)}</TableCell>
+                <TableCell>{interval.speakers.map(id => `Спикер ${id}`).join(', ')}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          Общее количество наложений: {safeStats.overlapDetails.count}
+        </Typography>
+        <Typography variant="body2">
+          Общее время наложений: {formatTime(safeStats.overlapDetails.total_ms)}
+        </Typography>
       </Box>
     </Box>
   );
