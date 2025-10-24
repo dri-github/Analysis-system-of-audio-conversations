@@ -6,6 +6,9 @@ import databases
 import json
 import uvicorn  # добавляем
 
+from collections import defaultdict, Counter
+from datetime import timedelta
+
 # --- Подключение к PostgreSQL ---
 DATABASE_URL = "postgresql://audrec_conv_s:service@postgres:5432/audio_rec"
 database = databases.Database(DATABASE_URL)
@@ -77,11 +80,25 @@ async def get_conversation(conversation_id: int):
     return data
 
 # --- GET /analyze/stats ---
-@app.get("/analyze/stats")
-async def analyze_stats():
-    query = "SELECT COUNT(*) AS total FROM public.get_conversations()"
-    result = await database.fetch_one(query=query)
-    return {"total_conversations": result["total"]}
+#@app.get("/analyze/stats")
+#async def analyze_stats():
+#    query = "SELECT COUNT(*) AS total FROM public.get_conversations()"
+#    result = await database.fetch_one(query=query)
+#    return {"total_conversations": result["total"]}
+
+# --- GET /analyze/stats ---
+@app.get("/analyze/stats/{conversation_id}")
+async def analyze_stats(conversation_id: int):
+    query = "SELECT public.get_conversations_stats(:cid) AS stats"
+    result = await database.fetch_one(query=query, values={"cid": conversation_id})
+    if not result:
+        raise HTTPException(status_code=404, detail="No data")
+    
+    stats = result["stats"]
+    if isinstance(stats, str):
+        stats = json.loads(stats)
+    
+    return stats
 
 # --- Авто-запуск через python main.py ---
 if __name__ == "__main__":
