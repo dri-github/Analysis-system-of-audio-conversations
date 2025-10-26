@@ -58,8 +58,8 @@ const ConversationPage = () => {
       const conversationData = await conversationResponse.json();
       setSelectedConversation(conversationData);
 
-      const baseName = conversationData.file_name.replace(/\.[^/.]+$/, '');
-      await fetchAudio(baseName);
+      const fullFileName = conversationData.file_name;
+      await fetchAudio(fullFileName);
 
       if (!statsResponse.ok) {
         console.warn('Ошибка при загрузке статистики, используется fallback');
@@ -79,10 +79,10 @@ const ConversationPage = () => {
     }
   };
 
-  const fetchAudio = async (baseName, signal) => {
+  const fetchAudio = async (fileName, signal) => {
     try {
       setAudioError(null);
-      const response = await fetch(`http://localhost:3001/api/audio/${baseName}.mp3`, { signal });
+      const response = await fetch(`http://localhost:3001/api/audio/${fileName}`, { signal });
       if (!response.ok) {
         throw new Error('Аудио файл не найден на сервере');
       }
@@ -245,7 +245,7 @@ const ConversationPage = () => {
                   {selectedConversation && (
                     <Box sx={{ mt: 2, p: 2, backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 2 }}>
                       <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                        Аудио файл: {selectedConversation.file_name.replace(/\.[^/.]+$/, '')}.mp3
+                        Аудио файл: {selectedConversation.file_name}
                       </Typography>
                       
                       {audioError ? (
