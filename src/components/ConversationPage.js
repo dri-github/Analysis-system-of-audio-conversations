@@ -51,7 +51,7 @@ const ConversationPage = () => {
       setAudioError(null);
       const [conversationResponse, statsResponse] = await Promise.all([
         fetch(`http://localhost:3001/api/conversations/${conversationId}`),
-        fetch(`http://localhost:3001/api/conversations/${conversationId}/stats`)
+        fetch(`http://localhost:3001/analyze/stats/{conversation_id}`)
       ]);
 
       if (!conversationResponse.ok) throw new Error('Ошибка при загрузке разговора');
