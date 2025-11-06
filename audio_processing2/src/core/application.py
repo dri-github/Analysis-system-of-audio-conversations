@@ -1,38 +1,82 @@
 """
-Основное приложение для обработки аудио.
-С поддержкой восстановления файлов из папки processing при запуске.
-"""
-import asyncio
-from typing import Optional, Dict, Any
-import structlog
+src/core/application.py - ПОЛНАЯ ВЕРСИЯ
 
+Включает:
+- ✅ MinIO интеграция
+- ✅ Метрики (MetricsCollector)
+- ✅ Конфигурация (управление в реальном времени)
+- ✅ API Client (правильная отправка на API)
+"""
+
+import asyncio
+from typing import Optional
+from datetime import datetime
+
+import structlog
 from config.settings import settings
 from src.core.exceptions import ApplicationError
+from src.storage.storage_manager import StorageManager
 from src.services.file_manager import FileManager
-from src.services.transcription_service import TranscriptionService
-from src.services.api_client import APIClient
-from src.services.task_pool import TaskPool
 from src.monitoring.watcher import Watcher
 from src.monitoring.metrics import MetricsCollector
+from src.services.task_pool import TaskPool
+from src.services.transcription_service import TranscriptionService
+from src.services.api_client import APIClient
 
 logger = structlog.get_logger()
 
 
 class AudioProcessingApplication:
-    """Основной класс приложения для обработки аудио"""
-    
+    """Главное приложение для обработки аудиофайлов с полной поддержкой MetricsCollector и конфигурации"""
+
     def __init__(self):
         """Инициализация приложения"""
         self.is_running = False
         self.is_paused = False
-        
-        # Инициализация компонентов
-        self.file_manager: Optional[FileManager] = None
-        self.transcription_service: Optional[TranscriptionService] = None
-        self.api_client: Optional[APIClient] = None
-        self.task_pool: Optional[TaskPool] = None
-        self.watcher: Optional[Watcher] = None
-        self.metrics: Optional[MetricsCollector] = None
+
+        # ✅ ИНИЦИАЛИЗИРУЕМ METRICS НАПРЯМУЮ (БЕЗ ОБЕРТКИ)
+        self.metrics = MetricsCollector()
+        logger.info("metrics.collector.initialized")
+
+        # Инициализируем компоненты
+        try:
+            # 1. StorageManager (MinIO или локальная файловая система)
+            self.storage_manager = StorageManager()
+            logger.debug("storage_manager.created")
+
+            # 2. FileManager
+            self.file_manager = FileManager(self.storage_manager)
+            logger.debug("file_manager.created")
+
+            # 3. Сервисы
+            self.transcription_service = TranscriptionService()
+            self.api_client = APIClient()
+            logger.debug("services.created")
+
+            # 4. TaskPool с передачей metrics
+            self.task_pool = TaskPool(
+                transcription_service=self.transcription_service,
+                api_client=self.api_client,
+                file_manager=self.file_manager,
+                metrics=self.metrics,
+                max_concurrent_tasks=settings.MAX_CONCURRENT_TASKS,
+                max_transcription_calls=settings.MAX_TRANSCRIPTION_CALLS,
+                max_api_calls=settings.MAX_API_CALLS,
+                queue_max_size=settings.TASK_QUEUE_MAX_SIZE
+            )
+            logger.debug("task_pool.created")
+
+            # 5. Watcher
+            self.watcher = Watcher(
+                file_manager=self.file_manager,
+                task_pool=self.task_pool,
+                scan_interval=settings.QUEUE_CHECK_INTERVAL
+            )
+            logger.debug("watcher.created")
+
+        except Exception as e:
+            logger.error("application.initialization.failed", error=str(e))
+            raise ApplicationError(f"Failed to initialize application: {e}")
 
     async def start(self) -> None:
         """Запуск приложения"""
@@ -40,27 +84,212 @@ class AudioProcessingApplication:
             logger.warning("application.already.running")
             return
 
+        logger.info("application.starting")
+
         try:
-            logger.info("application.starting")
-            
-            # Инициализация компонентов
-            self.file_manager = FileManager()
-            self.transcription_service = TranscriptionService()
-            self.api_client = APIClient()
-            self.metrics = MetricsCollector()
-            
-            # Запуск сервисов
+            # 1. StorageManager
+            await self.storage_manager.start()
+            logger.info("storage_manager.started")
+
+            # 2. Инициализируем MinIO buckets если используется
+            if settings.USE_MINIO:
+                await self.file_manager.initialize_minio_buckets()
+                logger.info("minio.buckets.initialized", using_minio=True)
+            else:
+                logger.info("using.local.storage")
+
+            # 3. Сервисы
             await self.transcription_service.start()
+            logger.info("transcription_service.started")
+
             await self.api_client.start()
+            logger.info("api_client.started")
+
+            # 4. TaskPool
+            await self.task_pool.start()
+            logger.info("task_pool.started")
+
+            # 5. Восстанавливаем файлы из processing
+            await self.watcher.recover_processing_files()
+            logger.info("processing.files.recovered")
+
+            # 6. Watcher
+            await self.watcher.start()
+            logger.info("watcher.started")
+
+            self.is_running = True
+            self.is_paused = False
+
+            logger.info("application.start.successful")
+
+        except Exception as e:
+            logger.error("application.start.failed", error=str(e))
+            await self._cleanup()
+            raise ApplicationError(f"Failed to start application: {e}")
+
+    async def stop(self) -> None:
+        """Остановка приложения"""
+        if not self.is_running:
+            logger.warning("application.not.running")
+            return
+
+        logger.info("application.stopping")
+        self.is_running = False
+
+        try:
+            await self._cleanup()
+            logger.info("application.stop.successful")
+        except Exception as e:
+            logger.error("application.stop.failed", error=str(e))
+
+    async def _cleanup(self) -> None:
+        """Очистка ресурсов"""
+        try:
+            if self.watcher and self.watcher.is_running:
+                await self.watcher.stop()
+                logger.debug("watcher.stopped")
+
+            if self.task_pool and self.task_pool.is_running:
+                await self.task_pool.stop()
+                logger.debug("task_pool.stopped")
+
+            if self.api_client:
+                await self.api_client.stop()
+                logger.debug("api_client.stopped")
+
+            if self.transcription_service:
+                await self.transcription_service.stop()
+                logger.debug("transcription_service.stopped")
+
+            if self.storage_manager:
+                await self.storage_manager.stop()
+                logger.debug("storage_manager.stopped")
+
+            logger.debug("cleanup.complete")
+        except Exception as e:
+            logger.error("cleanup.error", error=str(e))
+
+    async def pause(self) -> None:
+        """Приостановка обработки"""
+        if self.is_paused:
+            logger.warning("application.already.paused")
+            return
+
+        logger.info("application.pausing")
+
+        try:
+            await self.watcher.pause()
+            await self.task_pool.pause()
+            self.is_paused = True
+            logger.info("application.paused")
+        except Exception as e:
+            logger.error("application.pause.failed", error=str(e))
+
+    async def resume(self) -> None:
+        """Возобновление обработки"""
+        if not self.is_paused:
+            logger.warning("application.not.paused")
+            return
+
+        logger.info("application.resuming")
+
+        try:
+            await self.watcher.resume()
+            await self.task_pool.resume()
+            self.is_paused = False
+            logger.info("application.resumed")
+        except Exception as e:
+            logger.error("application.resume.failed", error=str(e))
+
+    async def restart(self) -> None:
+        """Полный перезапуск приложения"""
+        logger.info("application.restart.starting")
+        
+        try:
+            if self.is_running:
+                await self.stop()
+                await asyncio.sleep(1)
             
-            # Проверка соединений
-            if not await self.transcription_service.validate_connection():
-                logger.warning("transcription.service.connection.failed")
+            await self.start()
+            logger.info("application.restart.success")
+        except Exception as e:
+            logger.error("application.restart.failed", error=str(e))
+            raise ApplicationError(f"Failed to restart application: {e}")
+
+    def get_status(self) -> dict:
+        """Получение статуса приложения"""
+        try:
+            watcher_status = self.watcher.get_status() if hasattr(self.watcher, 'get_status') else {}
+        except:
+            watcher_status = {}
+
+        try:
+            task_pool_status = self.task_pool.get_status() if hasattr(self.task_pool, 'get_status') else {}
+        except:
+            task_pool_status = {}
+
+        total_processed = task_pool_status.get('processed', 0)
+        total_failed = task_pool_status.get('failed', 0)
+        total = total_processed + total_failed
+        success_rate = (total_processed / total * 100) if total > 0 else 0
+
+        return {
+            "is_running": self.is_running,
+            "is_paused": self.is_paused,
+            "storage_type": "minio" if settings.USE_MINIO else "local",
+            "storage_enabled": settings.USE_MINIO,
+            "watcher_status": watcher_status,
+            "task_pool_status": {
+                **task_pool_status,
+                "success_rate": f"{success_rate:.1f}%",
+                "queue_max_size": settings.TASK_QUEUE_MAX_SIZE
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+
+    async def get_stats(self) -> dict:
+        """Получение полной статистики"""
+        stats = self.get_status()
+        
+        if self.task_pool and hasattr(self.task_pool, 'task_queue'):
+            stats["queue_stats"] = {
+                "current_size": self.task_pool.task_queue.qsize(),
+                "max_size": self.task_pool.task_queue.maxsize,
+                "processed_total": self.task_pool.processed_count,
+                "failed_total": self.task_pool.failed_count,
+                "queue_full_events": getattr(self.task_pool, 'queue_full_events', 0),
+            }
+        
+        if self.watcher:
+            processed_count = self.watcher.get_processed_count() if hasattr(self.watcher, 'get_processed_count') else 0
+            stats["watcher_stats"] = {
+                "processed_files": processed_count,
+                "storage_type": "minio" if settings.USE_MINIO else "local",
+            }
+
+        return stats
+    
+    async def restart_task_pool(self) -> None:
+        """Перезагрузить пул задач с обновленными параметрами"""
+        try:
+            logger.info("taskpool.restart.starting")
             
-            if not await self.api_client.validate_connection():
-                logger.warning("api.client.connection.failed")
+            # Остановить старый TaskPool
+            if self.task_pool and self.task_pool.is_running:
+                logger.info("taskpool.stopping")
+                await self.task_pool.stop()
+                await asyncio.sleep(1)
+                logger.info("taskpool.stopped")
             
-            # Инициализация пула задач
+            # ✅ НОВОЕ: Восстановить файлы из processing bucket
+            logger.info("watcher.recovery.starting")
+            await self.watcher.recover_processing_files()
+            logger.info("watcher.recovery.completed")
+            
+            # Создать новый TaskPool
+            logger.info("taskpool.creating.new",
+                    max_workers=settings.MAX_CONCURRENT_TASKS)
+            
             self.task_pool = TaskPool(
                 transcription_service=self.transcription_service,
                 api_client=self.api_client,
@@ -72,316 +301,22 @@ class AudioProcessingApplication:
                 queue_max_size=settings.TASK_QUEUE_MAX_SIZE
             )
             
-            # Инициализация мониторинга папок
-            self.watcher = Watcher(
-                file_manager=self.file_manager,
-                task_pool=self.task_pool,
-                scan_interval=settings.QUEUE_CHECK_INTERVAL
-            )
-            
-            # Запуск компонентов
-            await self.task_pool.start()
-            await self.watcher.start()
-            
-            # ✅ НОВОЕ: Восстановить файлы из папки processing
-            await self._recover_processing_files()
-            
-            self.is_running = True
-            self.is_paused = False
-            logger.info("application.started.successfully")
+            # Запустить новый TaskPool
+            if self.is_running:
+                logger.info("taskpool.starting.new")
+                await self.task_pool.start()
+                logger.info("taskpool.restarted.successfully",
+                        new_max_workers=settings.MAX_CONCURRENT_TASKS)
+                
+                # Обновить ссылку в Watcher
+                await self.watcher.update_task_pool(self.task_pool)
+                logger.info("watcher.updated.with.new.taskpool")
+                
+                # Очистить кэш обработанных файлов
+                self.watcher.reset_processed_files()
+                logger.info("watcher.processed_files.reset")
             
         except Exception as e:
-            logger.error("application.start.failed", error=str(e))
-            await self.stop()
-            raise ApplicationError(f"Failed to start application: {e}")
-
-    async def _recover_processing_files(self) -> None:
-        """
-        Восстановить файлы из папки processing.
-        
-        Если при предыдущем запуске приложение аварийно завершилось,
-        в папке processing могут остаться незаконченные файлы.
-        Эта функция добавляет их обратно в очередь обработки.
-        """
-        try:
-            # Получаем список файлов в processing
-            processing_files = self.file_manager.get_processing_files()
-            
-            if not processing_files:
-                logger.info("recovery.no.files.found")
-                return
-            
-            logger.warning("recovery.found.files", count=len(processing_files))
-            
-            # Добавляем каждый файл обратно в очередь обработки
-            for file_path in processing_files:
-                try:
-                    await self.task_pool.add_task(file_path)
-                    logger.info("recovery.file.added", file=file_path.name)
-                except Exception as e:
-                    logger.error("recovery.add.task.failed", 
-                               file=file_path.name, 
-                               error=str(e))
-            
-            logger.info("recovery.completed", files_recovered=len(processing_files))
-            
-        except Exception as e:
-            logger.error("recovery.error", error=str(e))
-
-    async def stop(self) -> None:
-        """Остановка приложения"""
-        if not self.is_running:
-            return
-
-        logger.info("application.stopping")
-        
-        try:
-            # Останавливаем компоненты в правильном порядке
-            if self.watcher:
-                await self.watcher.stop()
-                
-            if self.task_pool:
-                await self.task_pool.stop()
-                
-            if self.api_client:
-                await self.api_client.stop()
-                
-            if self.transcription_service:
-                await self.transcription_service.stop()
-                
-            self.is_running = False
-            self.is_paused = False
-            logger.info("application.stopped.successfully")
-            
-        except Exception as e:
-            logger.error("application.stop.failed", error=str(e))
-            raise
-
-    async def pause(self) -> None:
-        """Приостановка приложения"""
-        if not self.is_running or self.is_paused:
-            return
-
-        logger.info("application.pausing")
-        self.is_paused = True
-        
-        # Приостанавливаем компоненты
-        if self.watcher:
-            await self.watcher.pause()
-            
-        if self.task_pool:
-            await self.task_pool.pause()
-            
-        logger.info("application.paused")
-
-    async def resume(self) -> None:
-        """Возобновление приложения"""
-        if not self.is_running or not self.is_paused:
-            return
-
-        logger.info("application.resuming")
-        self.is_paused = False
-        
-        # Возобновляем компоненты
-        if self.task_pool:
-            await self.task_pool.resume()
-            
-        if self.watcher:
-            await self.watcher.resume()
-            
-        logger.info("application.resumed")
-
-    async def restart(self) -> None:
-        """Перезапуск приложения"""
-        logger.info("application.restarting")
-        await self.stop()
-        await asyncio.sleep(1)
-        await self.start()
-
-    async def get_status(self) -> Dict[str, Any]:
-        """Получение статуса приложения"""
-        status = {
-            "is_running": self.is_running,
-            "is_paused": self.is_paused,
-            "task_pool_status": await self.task_pool.get_status() if self.task_pool else {},
-            "watcher_status": await self.watcher.get_status() if self.watcher else {},
-            "metrics": await self.metrics.get_metrics() if self.metrics else {}
-        }
-        
-        # Добавляем информацию о сервисах
-        if self.transcription_service:
-            status["transcription_service"] = {
-                "has_token": bool(self.transcription_service.auth_token)
-            }
-            
-        if self.api_client:
-            status["api_client"] = {
-                "is_connected": await self.api_client.validate_connection()
-            }
-            
-        return status
-
-    async def restart_task_pool(self) -> None:
-        """
-        Перезагрузить TaskPool с сохранением исторических метрик.
-        """
-        if not self.is_running:
-            logger.warning("restart_task_pool.app.not.running")
-            return
-        
-        try:
-            logger.info("restart_task_pool.starting")
-            
-            # ✅ ШАГ 1: Сохранить метрики перед перезагрузкой
-            if self.task_pool and self.metrics:
-                logger.info("restart_task_pool.saving_metrics",
-                        session_successful=self.task_pool.processed_count,
-                        session_failed=self.task_pool.failed_count)
-            
-            # ШАГ 2: Останавливаем старый пул задач
-            if self.task_pool:
-                logger.info("restart_task_pool.stopping_old_pool")
-                await self.task_pool.stop()
-                logger.info("restart_task_pool.old.stopped")
-            
-            # ШАГ 3: Перемещаем файлы из processing обратно в upload
-            logger.info("restart_task_pool.migrating_files")
-            migrated_files = await self._migrate_processing_files()
-            
-            # Небольшая пауза для устойчивости
-            logger.info("restart_task_pool.waiting")
-            await asyncio.sleep(1.0)
-            
-            # ШАГ 4: Создаем новый пул с обновленными параметрами
-            logger.info("restart_task_pool.creating_new_pool")
-            from src.services.task_pool import TaskPool
-            
-            new_task_pool = TaskPool(
-                transcription_service=self.transcription_service,
-                api_client=self.api_client,
-                file_manager=self.file_manager,
-                metrics=self.metrics,  # ✅ Переиспользуем тот же MetricsCollector!
-                max_concurrent_tasks=settings.MAX_CONCURRENT_TASKS,
-                max_transcription_calls=settings.MAX_TRANSCRIPTION_CALLS,
-                max_api_calls=settings.MAX_API_CALLS,
-                queue_max_size=settings.TASK_QUEUE_MAX_SIZE
-            )
-            
-            self.task_pool = new_task_pool
-            logger.info("restart_task_pool.new_pool_created", 
-                    new_pool_id=id(self.task_pool))
-            
-            # ✅ НОВОЕ: Сброс метрик текущей сессии (но история сохранена!)
-            logger.info("restart_task_pool.resetting_session_metrics")
-            self.metrics.reset_session_metrics()
-            
-            # ШАГ 5: Запускаем новый пул
-            logger.info("restart_task_pool.starting_new_pool")
-            await self.task_pool.start()
-            logger.info("restart_task_pool.new.started",
-                    max_concurrent_tasks=settings.MAX_CONCURRENT_TASKS,
-                    new_pool_id=id(self.task_pool))
-            
-            # ШАГ 6: Обновляем ссылку в Watcher на новый пул
-            logger.info("restart_task_pool.updating_watcher")
-            if self.watcher:
-                old_pool_id = id(self.watcher.task_pool)
-                
-                if hasattr(self.watcher, 'update_task_pool'):
-                    await self.watcher.update_task_pool(self.task_pool)
-                    logger.info("restart_task_pool.watcher.updated_async",
-                            old_pool_id=old_pool_id,
-                            new_pool_id=id(self.task_pool))
-                else:
-                    self.watcher.task_pool = self.task_pool
-                    logger.info("restart_task_pool.watcher.updated_sync",
-                            old_pool_id=old_pool_id,
-                            new_pool_id=id(self.task_pool))
-            else:
-                logger.warning("restart_task_pool.watcher.not_found")
-            
-            # ШАГ 7: Принудительно добавляем мигрированные файлы в очередь
-            logger.info("restart_task_pool.queueing_migrated_files",
-                    count=len(migrated_files))
-            
-            for file_path in migrated_files:
-                try:
-                    await self.task_pool.add_task(file_path)
-                    logger.info("restart_task_pool.migrated_file_queued",
-                            file=file_path.name)
-                except Exception as e:
-                    logger.error("restart_task_pool.queue_migrated_file.failed",
-                            file=file_path.name,
-                            error=str(e))
-            
-            logger.info("restart_task_pool.completed_successfully",
-                    migrated_files_count=len(migrated_files))
-            
-        except Exception as e:
-            logger.error("restart_task_pool.failed", error=str(e))
+            logger.error("taskpool.restart.failed", error=str(e))
             raise ApplicationError(f"Failed to restart task pool: {e}")
 
-    async def _migrate_processing_files(self) -> list:
-        """
-        Перемещить все файлы из папки processing обратно в audio_uploads.
-        
-        Возвращает список перемещённых файлов для дальнейшей обработки.
-        
-        Это необходимо при перезагрузке TaskPool, чтобы:
-        1. Файлы не потерялись
-        2. Они были переобработаны с новыми параметрами конфигурации
-        3. Очередь была очищена для нового начала
-        """
-        migrated_files = []
-        
-        try:
-            processing_files = self.file_manager.get_processing_files()
-            
-            if not processing_files:
-                logger.info("migrate_processing.no_files")
-                return migrated_files
-            
-            logger.warning("migrate_processing.starting", count=len(processing_files))
-            
-            migrated_count = 0
-            failed_count = 0
-            
-            for file_path in processing_files:
-                try:
-                    # Перемещаем файл обратно в папку upload
-                    from config.settings import settings
-                    import shutil
-                    
-                    destination = settings.UPLOAD_DIR / file_path.name
-                    
-                    # Проверяем что файл существует
-                    if not file_path.exists():
-                        logger.warning("migrate_processing.file.not_found", 
-                                    file=file_path.name)
-                        failed_count += 1
-                        continue
-                    
-                    shutil.move(str(file_path), str(destination))
-                    
-                    migrated_count += 1
-                    migrated_files.append(destination)  # Добавляем в список возврата
-                    
-                    logger.info("migrate_processing.file.moved",
-                            file=file_path.name,
-                            destination=str(destination))
-                    
-                except Exception as e:
-                    failed_count += 1
-                    logger.error("migrate_processing.file.failed",
-                            file=file_path.name,
-                            error=str(e))
-            
-            logger.info("migrate_processing.completed",
-                    migrated_count=migrated_count,
-                    failed_count=failed_count,
-                    total=len(processing_files))
-            
-        except Exception as e:
-            logger.error("migrate_processing.error", error=str(e))
-        
-        return migrated_files  # ✅ НОВОЕ: Возвращаем список мигрированных файлов
