@@ -7,6 +7,29 @@ import MessageList from './MessageList';
 import { getClassLabel } from './utils';
 import AudioPlayer from './AudioPlayer';
 
+// MinIO SDK
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
+// Настройки MinIO
+const MINIO_CONFIG = {
+  endpoint: 'http://10.200.115.155:9000',
+  accessKey: 'minadmin',
+  secretKey: 'minadmin',
+  bucket: 'audio-processed',
+  forcePathStyle: true,
+};
+
+const s3Client = new S3Client({
+  region: 'us-east-1',
+  endpoint: MINIO_CONFIG.endpoint,
+  credentials: {
+    accessKeyId: MINIO_CONFIG.accessKey,
+    secretAccessKey: MINIO_CONFIG.secretKey,
+  },
+  forcePathStyle: MINIO_CONFIG.forcePathStyle,
+});
+
 const ConversationPage = () => {
   const [conversations, setConversations] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
@@ -20,7 +43,9 @@ const ConversationPage = () => {
   const [audioError, setAudioError] = useState(null);
   const [currentSeek, setCurrentSeek] = useState({ start: null, stop: null });
   const [isPlaying, setIsPlaying] = useState(false);
-  const blobUrlRef = useRef(null);
+
+  // Кэшируем signed URL для текущего файла
+  const signedUrlRef = useRef('');
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -49,26 +74,33 @@ const ConversationPage = () => {
     try {
       setLoading(true);
       setAudioError(null);
+      setAudioSrc('');
+      signedUrlRef.current = ''; // Сбрасываем кэш при смене разговора
+
+      const controller = new AbortController();
+      const signal = controller.signal;
+
       const [conversationResponse, statsResponse] = await Promise.all([
-        fetch(`http://10.200.115.155/api/conversations/${conversationId}`),
-        fetch(`http://10.200.115.155/analyze/stats/${conversationId}`)
+        fetch(`http://10.200.115.155/api/conversations/${conversationId}`, { signal }),
+        fetch(`http://10.200.115.155/analyze/stats/${conversationId}`, { signal })
       ]);
 
       if (!conversationResponse.ok) throw new Error('Ошибка при загрузке разговора');
       const conversationData = await conversationResponse.json();
       setSelectedConversation(conversationData);
 
-      const fullFileName = conversationData.file_name;
-      await fetchAudio(fullFileName);
+      const fileName = conversationData.file_name;
+      await fetchAudioFromMinIO(fileName);
 
       if (!statsResponse.ok) {
-        console.warn('Ошибка при загрузке статистики, используется fallback');
+        console.warn('Статистика недоступна');
         setStats(null);
       } else {
         const statsData = await statsResponse.json();
         setStats(statsData);
       }
     } catch (err) {
+      if (err.name === 'AbortError') return;
       setError(err.message);
       setSelectedConversation({ file_data: { splitted: [] } });
       setStats(null);
@@ -79,28 +111,30 @@ const ConversationPage = () => {
     }
   };
 
-  const fetchAudio = async (fileName, signal) => {
+  const fetchAudioFromMinIO = async (fileName) => {
     try {
       setAudioError(null);
-      const response = await fetch(`http://10.200.115.155/api/audio/${fileName}`, { signal });
-      if (!response.ok) {
-        throw new Error('Аудио файл не найден на сервере');
-      }
-      const blob = await response.blob();
-      if (blobUrlRef.current) {
-        URL.revokeObjectURL(blobUrlRef.current);
-      }
-      const url = URL.createObjectURL(blob);
-      blobUrlRef.current = url;
-      setAudioSrc(url);
-    } catch (err) {
-      if (err.name === 'AbortError') {
-        console.log('Fetch aborted');
+      console.log('Получаем signed URL для:', fileName);
+
+      // Используем кэш
+      if (signedUrlRef.current) {
+        setAudioSrc(signedUrlRef.current);
         return;
       }
-      console.error(err);
+
+      const command = new GetObjectCommand({
+        Bucket: MINIO_CONFIG.bucket,
+        Key: fileName,
+      });
+
+      const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+      signedUrlRef.current = signedUrl;
+      setAudioSrc(signedUrl);
+
+    } catch (err) {
+      console.error('MinIO Error:', err);
       setAudioSrc('');
-      setAudioError(err.message || 'Не удалось загрузить аудио файл');
+      setAudioError(err.message || 'Не удалось загрузить аудио');
     }
   };
 
@@ -140,16 +174,13 @@ const ConversationPage = () => {
   );
 
   const handleSeekAudio = (startStr, stopStr) => {
-    console.log('handleSeekAudio: startStr =', startStr, 'stopStr =', stopStr); // Для отладки
     if (!startStr || !stopStr) {
-      console.warn('handleSeekAudio: Invalid start or stop time');
       setCurrentSeek({ start: null, stop: null });
       return;
     }
     const startInSeconds = timeStrToSeconds(startStr);
     const stopInSeconds = timeStrToSeconds(stopStr);
     if (isNaN(startInSeconds) || isNaN(stopInSeconds)) {
-      console.warn('handleSeekAudio: Invalid time conversion');
       setCurrentSeek({ start: null, stop: null });
       return;
     }
@@ -166,94 +197,44 @@ const ConversationPage = () => {
     return hours * 3600 + minutes * 60 + seconds;
   };
 
-  useEffect(() => {
-    return () => {
-      if (blobUrlRef.current) {
-        URL.revokeObjectURL(blobUrlRef.current);
-        blobUrlRef.current = null;
-      }
-    };
-  }, []);
-
   if (loading) return <Typography>Загрузка...</Typography>;
   if (error) return <Typography color="error">Ошибка: {error}</Typography>;
 
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        zIndex: -1,
-        overflowY: 'auto',
-      }}
-    >
+    <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', zIndex: -1, overflowY: 'auto' }}>
       <Box sx={{ ...styles.container, height: 'auto', minHeight: '100vh', overflowY: 'auto' }}>
         <Box sx={styles.analysisHeader}>
-          <Typography variant="h5" color="white" fontSize={40}>
-            Анализ разговора
-          </Typography>
+          <Typography variant="h5" color="white" fontSize={40}>Анализ разговора</Typography>
           {selectedConversation && (
             <Typography variant="subtitle1" color="white" sx={{ mt: 1 }}>
-              Файл: {selectedConversation.file_name} | 
-              Дата: {formatDate(selectedConversation.date_time)}
+              Файл: {selectedConversation.file_name} | Дата: {formatDate(selectedConversation.date_time)}
             </Typography>
           )}
         </Box>
 
         <Box sx={{ ...styles.mainContent, overflow: 'hidden' }}>
           <Box sx={{ ...styles.leftPanel, overflowY: 'auto' }}>
-            <Tabs
-              orientation="vertical"
-              variant="scrollable"
-              value={selectedTab}
-              onChange={handleTabChange}
-              aria-label="Conversations tabs"
-              sx={styles.tabs}
-            >
+            <Tabs orientation="vertical" variant="scrollable" value={selectedTab} onChange={handleTabChange} sx={styles.tabs}>
               {conversations.map((conv, index) => (
-                <Tab
-                  key={conv.id}
-                  label={`${conv.file_name}`}
-                  id={`vertical-tab-${index}`}
-                  aria-controls={`vertical-tabpanel-${index}`}
-                  sx={styles.tab}
-                />
+                <Tab key={conv.id} label={conv.file_name} sx={styles.tab} />
               ))}
             </Tabs>
           </Box>
+
           <Box sx={{ ...styles.rightPanel, minHeight: 0, height: '100%' }}>
             {conversations.map((conv, index) => (
-              <TabPanel 
-                key={conv.id} 
-                value={selectedTab} 
-                index={index}
-                sx={{ 
-                  flex: 1, 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  width: '100%',
-                  height: '100%'
-                }} 
-              >
+              <TabPanel key={conv.id} value={selectedTab} index={index} sx={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
                 <Box sx={styles.fixedSection}>
                   <StatsPanel stats={stats} />
                   
                   {selectedConversation && (
                     <Box sx={{ mt: 2, p: 2, backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 2 }}>
-                      <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                        Аудио файл: {selectedConversation.file_name}
-                      </Typography>
+                      <Typography variant="subtitle1" sx={{ mb: 1 }}>Аудио: {selectedConversation.file_name}</Typography>
                       
                       {audioError ? (
-                        <Typography color="error" sx={{ mb: 1 }}>
-                          {audioError}
-                        </Typography>
+                        <Typography color="error">{audioError}</Typography>
                       ) : (
-                        <AudioPlayer 
+                        <AudioPlayer
                           audioSrc={audioSrc}
                           currentSeek={currentSeek}
                           setCurrentSeek={setCurrentSeek}
@@ -267,38 +248,19 @@ const ConversationPage = () => {
                   )}
                   
                   <Box sx={styles.filterControls}>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      placeholder="Поиск по словам..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      size="small"
-                      sx={{ flex: 1 }}
-                    />
-                    <FormControl variant="outlined" size="small" sx={{ minWidth: 150, ml: 2 }}>
+                    <TextField fullWidth placeholder="Поиск..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} size="small" sx={{ flex: 1 }} />
+                    <FormControl size="small" sx={{ minWidth: 150, ml: 2 }}>
                       <InputLabel>Класс</InputLabel>
-                      <Select
-                        value={selectedClass}
-                        onChange={(e) => setSelectedClass(e.target.value)}
-                        label="Класс"
-                      >
+                      <Select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} label="Класс">
                         <MenuItem value="Все">Все</MenuItem>
-                        {uniqueClasses.map((cls) => (
-                          <MenuItem key={cls} value={cls}>{cls}</MenuItem>
-                        ))}
+                        {uniqueClasses.map((cls) => <MenuItem key={cls} value={cls}>{cls}</MenuItem>)}
                       </Select>
                     </FormControl>
                   </Box>
                 </Box>
 
                 <Box sx={{ ...styles.scrollableSection, height: '100%' }}>
-                  <MessageList
-                    fragments={fragments}
-                    searchTerm={searchTerm}
-                    selectedClass={selectedClass}
-                    onSeekAudio={handleSeekAudio}
-                  />
+                  <MessageList fragments={fragments} searchTerm={searchTerm} selectedClass={selectedClass} onSeekAudio={handleSeekAudio} />
                 </Box>
               </TabPanel>
             ))}
