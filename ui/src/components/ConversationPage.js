@@ -82,7 +82,7 @@ const ConversationPage = () => {
 
       const [conversationResponse, statsResponse] = await Promise.all([
         fetch(`http://10.200.115.155/api/conversations/${conversationId}`, { signal }),
-        fetch(`http://10.200.115.155/analyze/stats/${conversationId}`, { signal })
+        fetch(`http://10.200.115.155/api/analyze/stats/${conversationId}`, { signal })
       ]);
 
       if (!conversationResponse.ok) throw new Error('Ошибка при загрузке разговора');
