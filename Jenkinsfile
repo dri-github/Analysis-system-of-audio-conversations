@@ -26,7 +26,7 @@ pipeline {
         }
         stage('Run Docker Container') {
             steps {
-                sh 'docker stop nginx-gateway'
+                //sh 'docker stop nginx-gateway'
         
                 sh 'docker stop audio_rec_system_proc || true && docker rm audio_rec_system_proc || true'
                 sh 'docker stop audio_rec_system_ui || true && docker rm audio_rec_system_ui || true'
@@ -44,7 +44,7 @@ pipeline {
                 sh 'docker start audio_rec_system_ui'
                 sh 'docker start audio_rec_system_proc'
         
-                sh 'docker start nginx-gateway'
+                //sh 'docker start nginx-gateway'
             }
         }
     }
