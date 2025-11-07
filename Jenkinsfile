@@ -47,7 +47,7 @@ pipeline {
 
         stage('Nginx reload') {
             steps {
-                sh 'docker exec -it nginx nginx -s reload'
+                sh 'docker exec nginx nginx -s reload'
             }
         }
     }
