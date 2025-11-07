@@ -204,7 +204,7 @@ const ConversationPage = () => {
     <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', zIndex: -1, overflowY: 'auto' }}>
       <Box sx={{ ...styles.container, height: 'auto', minHeight: '100vh', overflowY: 'auto' }}>
         <Box sx={styles.analysisHeader}>
-          <Typography variant="h5" color="white" fontSize={40}>Анализ разговора</Typography>
+          <Typography variant="h5" color="white" fontSize={40}>Анализ разговора 123456789012345678901234567890</Typography>
           {selectedConversation && (
             <Typography variant="subtitle1" color="white" sx={{ mt: 1 }}>
               Файл: {selectedConversation.file_name} | Дата: {formatDate(selectedConversation.date_time)}
