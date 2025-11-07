@@ -54,7 +54,7 @@ class Settings(BaseSettings):
     # ========== MINIO CONFIGURATION ==========
 
     USE_MINIO: bool = Field(
-        default=False,
+        default=True,
         description="Использование MinIO вместо локального хранилища"
     )
 
