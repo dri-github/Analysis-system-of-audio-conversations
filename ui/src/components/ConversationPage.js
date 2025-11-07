@@ -26,7 +26,7 @@ const ConversationPage = () => {
     const fetchInitialData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3001/api/conversations');
+        const response = await fetch('http://10.200.115.155/api/conversations');
         if (!response.ok) throw new Error('Ошибка при загрузке списка разговоров');
         const conversationsData = await response.json();
         
@@ -50,8 +50,8 @@ const ConversationPage = () => {
       setLoading(true);
       setAudioError(null);
       const [conversationResponse, statsResponse] = await Promise.all([
-        fetch(`http://localhost:3001/api/conversations/${conversationId}`),
-        fetch(`http://localhost:3001/analyze/stats/${conversationId}`)
+        fetch(`http://10.200.115.155/api/conversations/${conversationId}`),
+        fetch(`http://10.200.115.155/analyze/stats/${conversationId}`)
       ]);
 
       if (!conversationResponse.ok) throw new Error('Ошибка при загрузке разговора');
@@ -82,7 +82,7 @@ const ConversationPage = () => {
   const fetchAudio = async (fileName, signal) => {
     try {
       setAudioError(null);
-      const response = await fetch(`http://localhost:3001/api/audio/${fileName}`, { signal });
+      const response = await fetch(`http://10.200.115.155/api/audio/${fileName}`, { signal });
       if (!response.ok) {
         throw new Error('Аудио файл не найден на сервере');
       }

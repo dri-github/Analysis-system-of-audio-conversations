@@ -24,10 +24,9 @@ pipeline {
                 }
             }
         }
+
         stage('Run Docker Container') {
             steps {
-                //sh 'docker stop nginx-gateway'
-        
                 sh 'docker stop audio_rec_system_proc || true && docker rm audio_rec_system_proc || true'
                 sh 'docker stop audio_rec_system_ui || true && docker rm audio_rec_system_ui || true'
                 sh 'docker stop audio_rec_system_api || true && docker rm audio_rec_system_api || true'
@@ -43,8 +42,12 @@ pipeline {
                 sh 'docker start audio_rec_system_api'
                 sh 'docker start audio_rec_system_ui'
                 sh 'docker start audio_rec_system_proc'
-        
-                //sh 'docker start nginx-gateway'
+            }
+        }
+
+        stage('Nginx reload') {
+            steps {
+                sh 'docker exec -it nginx nginx -s reload'
             }
         }
     }
