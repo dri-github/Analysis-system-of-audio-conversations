@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from '@mui/material/styles';
+import 'react-h5-audio-player/lib/styles.css'; // Убедитесь, что стили подключены
+
 import theme from './components/theme'; // Убедитесь, что путь верный
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

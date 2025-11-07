@@ -4,7 +4,7 @@ import { styles } from './styles';
 import { getClassLabel } from './utils';
 import MessageItem from './MessageItem';
 
-const MessageList = ({ fragments, searchTerm, selectedClass }) => {
+const MessageList = ({ fragments, searchTerm, selectedClass, onSeekAudio }) => {
   // Фильтрация фрагментов
   const filteredFragments = (fragments && Array.isArray(fragments) ? fragments : []).filter(fragment => {
     const matchesSearch = fragment.text.toLowerCase().includes(searchTerm.toLowerCase());
@@ -14,17 +14,19 @@ const MessageList = ({ fragments, searchTerm, selectedClass }) => {
   });
 
   return (
-    <Box>
+    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '1000px' }}>
       {filteredFragments.length > 0 ? (
-        <List sx={styles.messageList}>
+        <List sx={{ ...styles.messageList, flex: 1, overflowY: 'scroll' }}>
           {filteredFragments.map((fragment, fragIndex) => (
-            <MessageItem key={fragIndex} fragment={fragment} />
+            <MessageItem key={fragIndex} fragment={fragment} onSeekAudio={onSeekAudio} />
           ))}
         </List>
       ) : (
-        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-          Фрагменты не найдены по текущим фильтрам.
-        </Typography>
+        <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            Фрагменты не найдены по текущим фильтрам.
+          </Typography>
+        </Box>
       )}
     </Box>
   );
