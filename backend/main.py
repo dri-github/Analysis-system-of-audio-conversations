@@ -87,7 +87,7 @@ async def get_conversation(conversation_id: int):
 #    return {"total_conversations": result["total"]}
 
 # --- GET /analyze/stats ---
-@app.get("/analyze/stats/{conversation_id}")
+@app.get("/api/analyze/stats/{conversation_id}")
 async def analyze_stats(conversation_id: int):
     query = "SELECT public.get_conversations_stats(:cid) AS stats"
     result = await database.fetch_one(query=query, values={"cid": conversation_id})
