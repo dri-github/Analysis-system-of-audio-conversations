@@ -19,9 +19,11 @@ export const getSpeakerStyle = (speakerId) => {
 
 // Функция для цвета по классу (с базовым оттенком по спикеру)
 export const getClassColor = (fragment) => {
-  const className = fragment.classifiers?.smc?.["Оценка_разговора_1"]?.classes?.[0]?.class || "N/A";
+  const className = fragment.classifiers?.smc?.["Скрипты1"]?.classes?.[0]?.class || "N/A";
   const colorMap = {
+    "Привествие": "#21a521ff",
     "Приветствие": "#21a521ff",
+
     "Общие вопросы": "#53a5e0ff",
     "Запрос информации": "#d0963aff",
     "Жалоба": "#f44d66ff",
@@ -44,7 +46,7 @@ export const getClassColor = (fragment) => {
 
 // Функция для извлечения класса
 export const getClassLabel = (fragment) => {
-  const classifiers = fragment.classifiers?.smc?.["Оценка_разговора_1"]?.classes;
+  const classifiers = fragment.classifiers?.smc?.["Скрипты1"]?.classes;
   if (classifiers && classifiers.length > 0) {
     const firstClass = classifiers[0];
     return `${firstClass.class}`;
@@ -54,9 +56,9 @@ export const getClassLabel = (fragment) => {
 
 // Функция для извлечения эмоции
 export const getEmotionLabel = (fragment) => {
-  const emotion = fragment.voice_analysis?.emotion;
-  if (emotion && emotion.class) {
-    return `${emotion.class}`;
+  const emotion = fragment.emotion;
+  if (emotion) {
+    return `${Object.keys(emotion)[0]}`;
   }
   return "N/A";
 };
