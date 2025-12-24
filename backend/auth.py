@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+from argon2 import PasswordHasher
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
@@ -11,8 +11,8 @@ SECRET_KEY = "your-secret-key-change-this-in-production"  # В продакше�
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Настройка для хеширования паролей
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Настройка для хеширования паролей (Argon2 не имеет ограничения в 72 байта)
+ph = PasswordHasher()
 
 # OAuth2 схема для получения токена
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
@@ -27,33 +27,19 @@ class TokenData(BaseModel):
     username: Optional[str] = None
 
 
-def _truncate_password(password: str) -> str:
-    """Безопасно обрезает пароль до 72 байт для bcrypt"""
-    password_bytes = password.encode('utf-8')
-    if len(password_bytes) <= 72:
-        return password
-    
-    # Обрезаем до 72 байт и декодируем обратно, игнорируя возможные ошибки
-    truncated_bytes = password_bytes[:72]
-    # Убираем неполные UTF-8 символы в конце
-    while truncated_bytes:
-        try:
-            return truncated_bytes.decode('utf-8')
-        except UnicodeDecodeError:
-            truncated_bytes = truncated_bytes[:-1]
-    return password[:72]  # Fallback - просто обрезаем строку
-
-
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Проверка пароля"""
-    password_to_hash = _truncate_password(plain_password)
-    return pwd_context.verify(password_to_hash, hashed_password)
+    try:
+        ph.verify(hashed_password, plain_password)
+        return True
+    except Exception:
+        return False
 
 
 def get_password_hash(password: str) -> str:
     """Хеширование пароля"""
-    password_to_hash = _truncate_password(password)
-    return pwd_context.hash(password_to_hash)
+    # Argon2 не имеет ограничения на длину пароля
+    return ph.hash(password)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
