@@ -31,26 +31,26 @@ class TokenData(BaseModel):
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Проверка пароля"""
     # Bcrypt ограничивает пароль 72 байтами
-    # Для длинных паролей используем SHA256 предварительное хеширование
+    # Обрезаем пароль до 72 байт, если он длиннее
     password_bytes = plain_password.encode('utf-8')
     if len(password_bytes) > 72:
-        # Используем hexdigest для получения строки фиксированной длины
-        password_to_hash = hashlib.sha256(password_bytes).hexdigest()
+        # Обрезаем до 72 байт (как рекомендует bcrypt)
+        password_to_hash = password_bytes[:72]
     else:
-        password_to_hash = plain_password
+        password_to_hash = plain_password.encode('utf-8')
     return pwd_context.verify(password_to_hash, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
     """Хеширование пароля"""
     # Bcrypt ограничивает пароль 72 байтами
-    # Для длинных паролей используем SHA256 предварительное хеширование
+    # Обрезаем пароль до 72 байт, если он длиннее
     password_bytes = password.encode('utf-8')
     if len(password_bytes) > 72:
-        # Используем hexdigest для получения строки фиксированной длины
-        password_to_hash = hashlib.sha256(password_bytes).hexdigest()
+        # Обрезаем до 72 байт (как рекомендует bcrypt)
+        password_to_hash = password_bytes[:72]
     else:
-        password_to_hash = password
+        password_to_hash = password_bytes
     return pwd_context.hash(password_to_hash)
 
 
