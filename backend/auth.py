@@ -34,8 +34,11 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     # Для длинных паролей используем SHA256 предварительное хеширование
     password_bytes = plain_password.encode('utf-8')
     if len(password_bytes) > 72:
-        password_bytes = hashlib.sha256(password_bytes).digest()
-    return pwd_context.verify(password_bytes, hashed_password)
+        # Используем hexdigest для получения строки фиксированной длины
+        password_to_hash = hashlib.sha256(password_bytes).hexdigest()
+    else:
+        password_to_hash = plain_password
+    return pwd_context.verify(password_to_hash, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
@@ -44,8 +47,11 @@ def get_password_hash(password: str) -> str:
     # Для длинных паролей используем SHA256 предварительное хеширование
     password_bytes = password.encode('utf-8')
     if len(password_bytes) > 72:
-        password_bytes = hashlib.sha256(password_bytes).digest()
-    return pwd_context.hash(password_bytes)
+        # Используем hexdigest для получения строки фиксированной длины
+        password_to_hash = hashlib.sha256(password_bytes).hexdigest()
+    else:
+        password_to_hash = password
+    return pwd_context.hash(password_to_hash)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

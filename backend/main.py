@@ -2,8 +2,9 @@ from fastapi import FastAPI, HTTPException, Body, Query, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Dict, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import Session
+from contextlib import asynccontextmanager
 import uvicorn
 
 from datetime import timedelta
@@ -20,7 +21,16 @@ from auth import (
 )
 from stats import calculate_stats
 
-app = FastAPI(title="Conversations API")
+# --- Lifespan для создания таблиц ---
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: создание всех таблиц (если их нет)
+    Base.metadata.create_all(bind=engine)
+    yield
+    # Shutdown: можно добавить код для закрытия соединений
+
+
+app = FastAPI(title="Conversations API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -38,30 +48,21 @@ class UserRegister(BaseModel):
 
 
 class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
     id: int
     username: str
     email: str
 
-    class Config:
-        from_attributes = True
-
 
 class ConversationResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
     id: int
     file_data: Dict[str, Any]
     file_name: str
     file_path: str
     date_time: str
-
-    class Config:
-        from_attributes = True
-
-
-# --- Lifespan для создания таблиц ---
-@app.on_event("startup")
-async def startup():
-    # Создание всех таблиц (если их нет)
-    Base.metadata.create_all(bind=engine)
 
 
 # --- Эндпоинты авторизации ---
