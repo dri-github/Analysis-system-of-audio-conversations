@@ -1,14 +1,14 @@
 from fastapi import FastAPI, HTTPException, Body, Query, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 from pydantic import BaseModel
-import databases
-import json
-import uvicorn  # добавляем
+from sqlalchemy.orm import Session
+import uvicorn
 
-from collections import defaultdict, Counter
 from datetime import timedelta
+from database import get_db, Base, engine
+from models import User, Conversation
 from auth import (
     verify_password,
     get_password_hash,
@@ -18,10 +18,7 @@ from auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     TokenData
 )
-
-# --- Подключение к PostgreSQL ---
-DATABASE_URL = "postgresql://audrec_conv_s:service@postgres:5432/audio_rec"
-database = databases.Database(DATABASE_URL)
+from stats import calculate_stats
 
 app = FastAPI(title="Conversations API")
 
@@ -33,63 +30,49 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Pydantic модели ---
-class Conversation(BaseModel):
-    file_data: dict
-
-
+# --- Pydantic модели для запросов/ответов ---
 class UserRegister(BaseModel):
     username: str
     email: str
     password: str
 
 
-class UserLogin(BaseModel):
-    username: str
-    password: str
-
-
-class User(BaseModel):
+class UserResponse(BaseModel):
     id: int
     username: str
     email: str
-    hashed_password: str
 
-# --- Lifespan для подключения к БД ---
+    class Config:
+        from_attributes = True
+
+
+class ConversationResponse(BaseModel):
+    id: int
+    file_data: Dict[str, Any]
+    file_name: str
+    file_path: str
+    date_time: str
+
+    class Config:
+        from_attributes = True
+
+
+# --- Lifespan для создания таблиц ---
 @app.on_event("startup")
 async def startup():
-    await database.connect()
-    # Создание таблицы пользователей, если её нет
-    create_users_table_query = """
-    CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        username VARCHAR(50) UNIQUE NOT NULL,
-        email VARCHAR(100) UNIQUE NOT NULL,
-        hashed_password VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    """
-    try:
-        await database.execute(create_users_table_query)
-    except Exception as e:
-        print(f"Ошибка при создании таблицы users: {e}")
-
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
+    # Создание всех таблиц (если их нет)
+    Base.metadata.create_all(bind=engine)
 
 
 # --- Эндпоинты авторизации ---
 
 @app.post("/api/auth/register", response_model=dict, status_code=status.HTTP_201_CREATED)
-async def register(user_data: UserRegister):
+def register(user_data: UserRegister, db: Session = Depends(get_db)):
     """Регистрация нового пользователя"""
     # Проверка существования пользователя
-    check_user_query = "SELECT id FROM users WHERE username = :username OR email = :email"
-    existing_user = await database.fetch_one(
-        query=check_user_query,
-        values={"username": user_data.username, "email": user_data.email}
-    )
+    existing_user = db.query(User).filter(
+        (User.username == user_data.username) | (User.email == user_data.email)
+    ).first()
     
     if existing_user:
         raise HTTPException(
@@ -99,29 +82,26 @@ async def register(user_data: UserRegister):
     
     # Хеширование пароля и создание пользователя
     hashed_password = get_password_hash(user_data.password)
-    insert_user_query = """
-    INSERT INTO users (username, email, hashed_password)
-    VALUES (:username, :email, :hashed_password)
-    RETURNING id, username, email
-    """
+    new_user = User(
+        username=user_data.username,
+        email=user_data.email,
+        hashed_password=hashed_password
+    )
+    
     try:
-        result = await database.fetch_one(
-            query=insert_user_query,
-            values={
-                "username": user_data.username,
-                "email": user_data.email,
-                "hashed_password": hashed_password
-            }
-        )
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
         return {
             "message": "User registered successfully",
             "user": {
-                "id": result["id"],
-                "username": result["username"],
-                "email": result["email"]
+                "id": new_user.id,
+                "username": new_user.username,
+                "email": new_user.email
             }
         }
     except Exception as e:
+        db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error creating user: {str(e)}"
@@ -129,14 +109,10 @@ async def register(user_data: UserRegister):
 
 
 @app.post("/api/auth/login", response_model=Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """Вход пользователя и получение JWT токена"""
     # Поиск пользователя по username
-    get_user_query = "SELECT id, username, email, hashed_password FROM users WHERE username = :username"
-    user = await database.fetch_one(
-        query=get_user_query,
-        values={"username": form_data.username}
-    )
+    user = db.query(User).filter(User.username == form_data.username).first()
     
     if not user:
         raise HTTPException(
@@ -146,7 +122,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         )
     
     # Проверка пароля
-    if not verify_password(form_data.password, user["hashed_password"]):
+    if not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -156,105 +132,106 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     # Создание токена
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user["username"]}, expires_delta=access_token_expires
+        data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/api/auth/me")
-async def read_users_me(current_user: TokenData = Depends(get_current_user)):
+@app.get("/api/auth/me", response_model=UserResponse)
+def read_users_me(current_user: TokenData = Depends(get_current_user), db: Session = Depends(get_db)):
     """Получение информации о текущем пользователе"""
-    get_user_query = "SELECT id, username, email FROM users WHERE username = :username"
-    user = await database.fetch_one(
-        query=get_user_query,
-        values={"username": current_user.username}
-    )
+    user = db.query(User).filter(User.username == current_user.username).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    return {
-        "id": user["id"],
-        "username": user["username"],
-        "email": user["email"]
-    }
+    return user
 
 
-# --- POST /api/conversations ---
+# --- Эндпоинты для разговоров ---
+
 @app.post("/api/conversations")
-async def add_conversation(
+def add_conversation(
     conversation: Dict[str, Any] = Body(...),
     fname: str = Query(...),
     fpath: str = Query(...),
-    current_user: TokenData = Depends(get_current_user)
+    current_user: TokenData = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-    query = """
-    SELECT public.load_conversation(CAST(:file_data AS jsonb), :file_name, :file_path) AS id
-    """
-    values = {
-        "file_data": json.dumps(conversation),
-        "file_name": fname,
-        "file_path": fpath
-    }
+    """Добавление нового разговора"""
     try:
-        result = await database.fetch_one(query=query, values=values)
-        return {"id": result["id"]}
+        new_conversation = Conversation(
+            file_data=conversation,
+            file_name=fname,
+            file_path=fpath
+        )
+        db.add(new_conversation)
+        db.commit()
+        db.refresh(new_conversation)
+        return {"id": new_conversation.id}
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
-# --- GET /api/conversations ---
+
 @app.get("/api/conversations")
-async def get_all_conversations(current_user: TokenData = Depends(get_current_user)):
-    query = "SELECT * FROM public.get_conversations()"
-    results = await database.fetch_all(query=query)
-    return [dict(r) for r in results]
+def get_all_conversations(
+    current_user: TokenData = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Получение списка всех разговоров"""
+    conversations = db.query(Conversation).all()
+    result = []
+    for conv in conversations:
+        result.append({
+            "id": conv.id,
+            "file_data": conv.file_data,
+            "file_name": conv.file_name,
+            "file_path": conv.file_path,
+            "date_time": conv.date_time.isoformat() if conv.date_time else None
+        })
+    return result
 
-# --- GET /api/conversations/{id} ---
+
 @app.get("/api/conversations/{conversation_id}")
-async def get_conversation(
+def get_conversation(
     conversation_id: int,
-    current_user: TokenData = Depends(get_current_user)
+    current_user: TokenData = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-    query = "SELECT * FROM public.get_single_conversation(:id)"
-    result = await database.fetch_one(query=query, values={"id": conversation_id})
-    if not result:
+    """Получение конкретного разговора по ID"""
+    conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+    if not conversation:
         raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    return {
+        "id": conversation.id,
+        "file_data": conversation.file_data,
+        "file_name": conversation.file_name,
+        "file_path": conversation.file_path,
+        "date_time": conversation.date_time.isoformat() if conversation.date_time else None
+    }
 
-    data = dict(result)
-    # Парсим file_data из строки в JSON-объект
-    if "file_data" in data and isinstance(data["file_data"], str):
-        try:
-            data["file_data"] = json.loads(data["file_data"])
-        except json.JSONDecodeError:
-            # Если вдруг невалидный JSON, оставляем как есть
-            pass
 
-    return data
-
-# --- GET /analyze/stats ---
-#@app.get("/analyze/stats")
-#async def analyze_stats():
-#    query = "SELECT COUNT(*) AS total FROM public.get_conversations()"
-#    result = await database.fetch_one(query=query)
-#    return {"total_conversations": result["total"]}
-
-# --- GET /analyze/stats ---
 @app.get("/api/analyze/stats/{conversation_id}")
-async def analyze_stats(
+def analyze_stats(
     conversation_id: int,
-    current_user: TokenData = Depends(get_current_user)
+    current_user: TokenData = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-    query = "SELECT public.get_conversations_stats(:cid) AS stats"
-    result = await database.fetch_one(query=query, values={"cid": conversation_id})
-    if not result:
+    """Получение статистики разговора"""
+    conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+    if not conversation:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    if not conversation.file_data:
         raise HTTPException(status_code=404, detail="No data")
     
-    stats = result["stats"]
-    if isinstance(stats, str):
-        stats = json.loads(stats)
-    
+    # Вычисляем статистику из file_data
+    stats = calculate_stats(conversation.file_data)
     return stats
+
 
 # --- Авто-запуск через python main.py ---
 if __name__ == "__main__":
