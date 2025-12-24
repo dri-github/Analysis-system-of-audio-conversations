@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Tabs, Tab, Typography, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { styles } from './styles';
 import TabPanel from './TabPanel';
 import StatsPanel from './StatsPanel';
 import MessageList from './MessageList';
 import { getClassLabel } from './utils';
 import AudioPlayer from './AudioPlayer';
+import { apiRequest, isAuthenticated } from '../utils/auth';
 
 // MinIO SDK
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
@@ -31,6 +33,7 @@ const s3Client = new S3Client({
 });
 
 const ConversationPage = () => {
+  const navigate = useNavigate();
   const [conversations, setConversations] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedConversation, setSelectedConversation] = useState(null);
@@ -47,13 +50,20 @@ const ConversationPage = () => {
   // Кэшируем signed URL для текущего файла
   const signedUrlRef = useRef('');
 
+  // Проверка авторизации при монтировании
   useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!isAuthenticated()) return;
+    
     const fetchInitialData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://10.200.115.155/api/conversations');
-        if (!response.ok) throw new Error('Ошибка при загрузке списка разговоров');
-        const conversationsData = await response.json();
+        const conversationsData = await apiRequest('/api/conversations');
         
         setConversations(conversationsData);
         
@@ -62,13 +72,17 @@ const ConversationPage = () => {
           setSelectedTab(0);
         }
       } catch (err) {
-        setError(err.message);
+        if (err.message === 'Unauthorized') {
+          navigate('/login');
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
     fetchInitialData();
-  }, []);
+  }, [navigate]);
 
   const fetchConversationAndStats = async (conversationId) => {
     try {
@@ -77,30 +91,31 @@ const ConversationPage = () => {
       setAudioSrc('');
       signedUrlRef.current = ''; // Сбрасываем кэш при смене разговора
 
-      const controller = new AbortController();
-      const signal = controller.signal;
-
-      const [conversationResponse, statsResponse] = await Promise.all([
-        fetch(`http://10.200.115.155/api/conversations/${conversationId}`, { signal }),
-        fetch(`http://10.200.115.155/api/analyze/stats/${conversationId}`, { signal })
+      const [conversationData, statsData] = await Promise.all([
+        apiRequest(`/api/conversations/${conversationId}`).catch(err => {
+          if (err.message === 'Unauthorized') {
+            navigate('/login');
+            throw err;
+          }
+          throw new Error('Ошибка при загрузке разговора');
+        }),
+        apiRequest(`/api/analyze/stats/${conversationId}`).catch(() => {
+          console.warn('Статистика недоступна');
+          return null;
+        })
       ]);
 
-      if (!conversationResponse.ok) throw new Error('Ошибка при загрузке разговора');
-      const conversationData = await conversationResponse.json();
       setSelectedConversation(conversationData);
 
       const fileName = conversationData.file_name;
       await fetchAudioFromMinIO(fileName);
 
-      if (!statsResponse.ok) {
-        console.warn('Статистика недоступна');
-        setStats(null);
-      } else {
-        const statsData = await statsResponse.json();
-        setStats(statsData);
-      }
+      setStats(statsData);
     } catch (err) {
-      if (err.name === 'AbortError') return;
+      if (err.message === 'Unauthorized') {
+        navigate('/login');
+        return;
+      }
       setError(err.message);
       setSelectedConversation({ file_data: { splitted: [] } });
       setStats(null);
