@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
+import hashlib
 
 # Настройки JWT
 SECRET_KEY = "your-secret-key-change-this-in-production"  # В продакшене используйте переменную окружения
@@ -29,12 +30,22 @@ class TokenData(BaseModel):
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Проверка пароля"""
-    return pwd_context.verify(plain_password, hashed_password)
+    # Bcrypt ограничивает пароль 72 байтами
+    # Для длинных паролей используем SHA256 предварительное хеширование
+    password_bytes = plain_password.encode('utf-8')
+    if len(password_bytes) > 72:
+        password_bytes = hashlib.sha256(password_bytes).digest()
+    return pwd_context.verify(password_bytes, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
     """Хеширование пароля"""
-    return pwd_context.hash(password)
+    # Bcrypt ограничивает пароль 72 байтами
+    # Для длинных паролей используем SHA256 предварительное хеширование
+    password_bytes = password.encode('utf-8')
+    if len(password_bytes) > 72:
+        password_bytes = hashlib.sha256(password_bytes).digest()
+    return pwd_context.hash(password_bytes)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
