@@ -5,7 +5,6 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
-import hashlib
 
 # Настройки JWT
 SECRET_KEY = "your-secret-key-change-this-in-production"  # В продакшене используйте переменную окружения
@@ -28,29 +27,32 @@ class TokenData(BaseModel):
     username: Optional[str] = None
 
 
+def _truncate_password(password: str) -> str:
+    """Безопасно обрезает пароль до 72 байт для bcrypt"""
+    password_bytes = password.encode('utf-8')
+    if len(password_bytes) <= 72:
+        return password
+    
+    # Обрезаем до 72 байт и декодируем обратно, игнорируя возможные ошибки
+    truncated_bytes = password_bytes[:72]
+    # Убираем неполные UTF-8 символы в конце
+    while truncated_bytes:
+        try:
+            return truncated_bytes.decode('utf-8')
+        except UnicodeDecodeError:
+            truncated_bytes = truncated_bytes[:-1]
+    return password[:72]  # Fallback - просто обрезаем строку
+
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Проверка пароля"""
-    # Bcrypt ограничивает пароль 72 байтами
-    # Обрезаем пароль до 72 байт, если он длиннее
-    password_bytes = plain_password.encode('utf-8')
-    if len(password_bytes) > 72:
-        # Обрезаем до 72 байт (как рекомендует bcrypt)
-        password_to_hash = password_bytes[:72]
-    else:
-        password_to_hash = plain_password.encode('utf-8')
+    password_to_hash = _truncate_password(plain_password)
     return pwd_context.verify(password_to_hash, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
     """Хеширование пароля"""
-    # Bcrypt ограничивает пароль 72 байтами
-    # Обрезаем пароль до 72 байт, если он длиннее
-    password_bytes = password.encode('utf-8')
-    if len(password_bytes) > 72:
-        # Обрезаем до 72 байт (как рекомендует bcrypt)
-        password_to_hash = password_bytes[:72]
-    else:
-        password_to_hash = password_bytes
+    password_to_hash = _truncate_password(password)
     return pwd_context.hash(password_to_hash)
 
 

@@ -103,9 +103,14 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
         }
     except Exception as e:
         db.rollback()
+        import traceback
+        error_detail = str(e)
+        # Логируем полную ошибку для отладки
+        print(f"Registration error: {error_detail}")
+        print(traceback.format_exc())
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error creating user: {str(e)}"
+            detail=f"Error creating user: {error_detail}"
         )
 
 
